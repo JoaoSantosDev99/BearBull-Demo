@@ -5,16 +5,28 @@ import { addressShortener } from "../../utils";
 import { useEffect } from "react";
 import { useState } from "react";
 import { ethers } from "ethers";
-import registryAbi from "../../contracts/registry_abi.json";
-import puppy from "../../assets/dog.png";
+
+import logo from "../../assets/Logos/footerLogo.svg";
+import drop from "../../assets/icons/drop.png";
+import wallet from "../../assets/icons/wallet.png";
+import haburger from "../../assets/icons/mobile.png";
+import close from "../../assets/icons/close.png";
+import money from "../../assets/icons/money.png";
+
+import tg from "../../assets/icons/tg.svg";
+import tw from "../../assets/icons/twtt.svg";
+import dk from "../../assets/icons/dk.svg";
 
 const Header = () => {
+  const [nav, setNav] = useState(false);
   const { open } = useWeb3Modal();
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
-  const [primaryDomain, setPrimaryDomain] = useState("");
-
   const { address, isConnected } = useAccount();
+
+  const handleNav = () => {
+    setNav((p) => !p);
+  };
 
   const connectWallet = () => {
     if (chain?.id !== 719) {
@@ -27,73 +39,201 @@ const Header = () => {
     }
   };
 
-  const registryAddress = "0xa3e95A1a797711b779d3B70aA4B8380d6b1cf5BF";
-  const staticProvider = new ethers.providers.JsonRpcProvider(
-    "https://puppynet.shibrpc.com"
-  );
-
-  const readRegistryContract = new ethers.Contract(
-    registryAddress,
-    registryAbi,
-    staticProvider
-  );
-
-  useEffect(() => {
-    const fetchPrimaryDomain = async () => {
-      if (isConnected) {
-        const name = await readRegistryContract.primaryDomain(address);
-
-        setPrimaryDomain(ethers.utils.parseBytes32String(name));
-      }
-    };
-
-    fetchPrimaryDomain();
-  }, []);
-
   return (
-    <header className="w-full flex justify-center pt-1 px-1">
-      <div className="flex flex-col gap-1 w-full justify-center items-center">
-        <div className="max-w-screen-2xl w-full flex justify-between items-center p-2 rounded-md bg-[#242424e3]">
+    <header className="w-full bg-black flex justify-center">
+      <div className="flex max-w-screen-2xl px-3 py-5 xl:py-14 w-full justify-between items-center">
+        {/* Logo */}
+        <div className="flex items-center gap-[20px]">
           <h1>
-            <Link to="/">
-              <div className="flex w-36 h-14 rounded-md bg-white font-bold text-xl justify-center items-center">
-                LOGO
-              </div>
-            </Link>
+            <img
+              src={logo}
+              alt="log"
+              className="xl:h-[142px] h-[72px] w-[72px] xl:w-[142px]"
+            />
           </h1>
-
-          {isConnected ? (
-            <div className="bg-[#d6d6d6] font-bold text-lg p-3 rounded-md">
-              {primaryDomain !== "" ? (
-                <>{primaryDomain.slice(0, 11)}.inu</>
-              ) : (
-                addressShortener(address)
-              )}
-            </div>
-          ) : (
-            <div>
-              <button
-                onClick={connectWallet}
-                className="hidden md:flex bg-[#d6d6d6] p-3 rounded-md"
-              >
-                Connect Wallet
-              </button>
-              <button
-                onClick={connectWallet}
-                className="md:hidden bg-[#d6d6d6] p-3 rounded-md"
-              >
-                Connect
-              </button>
-            </div>
-          )}
+          <span className="text-white font-bold text-[20px] xl:text-[32px] leading-[80%] ">
+            BearBull
+            <br /> DEX
+          </span>
         </div>
-        <div className="max-w-screen-2xl bg-[#484848f0] text-white font-bold w-full flex justify-center gap-4 items-center p-2 rounded-md">
-          This is a demo running on Puppynet{" "}
+
+        {/* Text links */}
+        <div className="hidden xl:flex gap-10">
+          {/* text */}
+          <ul className="flex gap-10">
+            {/* 1 */}
+            <li className="flex font-bold text-white items-center gap-2 text-[24px] leading-[80%]">
+              <img
+                src={drop}
+                alt=""
+              />
+              <span>
+                BearBull <br />
+                Protocols
+              </span>
+            </li>
+            {/* 2 */}
+            <li className="flex font-bold text-white items-center gap-2 text-[24px] leading-[80%]">
+              <img
+                src={drop}
+                alt=""
+              />
+
+              <span>
+                BearBull <br />
+                Token
+              </span>
+            </li>
+            {/* wallet */}
+            <li className="flex font-bold text-white items-center gap-2 text-[24px] leading-[80%]">
+              <img
+                src={wallet}
+                alt=""
+              />
+              <span>
+                Connect <br />
+                Wallet
+              </span>
+            </li>
+          </ul>
+
+          {/* Price */}
+          <div>
+            <button className="h-[61px] w-[162px] bg-white font-bold text-[24px]">
+              Buy BBT
+            </button>
+            <button className="text-white h-[61px] w-[162px] border-white border-[3px] font-semibold text-[24px]">
+              $0.2271
+            </button>
+          </div>
+        </div>
+
+        {/* Hamburger */}
+        <button
+          onClick={() => setNav(true)}
+          className="xl:hidden mb-4"
+        >
           <img
-            src={puppy}
+            src={haburger}
             alt=""
-            className="w-7 h-7"
           />
+        </button>
+
+        {/* Mobile menu */}
+        <div
+          className={
+            nav
+              ? "xl:hidden fixed z-50 right-0 top-0 w-full h-screen drop-shadow-2xl "
+              : "hidden"
+          }
+        >
+          <div
+            className={
+              nav
+                ? "bg-[#000000] fixed z-10 flex transition-all flex-col justify-between right-0 bottom-0 top-0 w-[100%] sm:w-[60%] md:w-[45%] h-screen text-white px-8 py-10 ease-in duration-500"
+                : "fixed right-[-130%] top-0 p-10 transition-all ease-in duration-500"
+            }
+          >
+            <div className="flex flex-col w-full h-screen items-center justify-start">
+              {/* mobile logo */}
+              <div className="flex justify-between items-center w-full mb-5">
+                <div className="flex items-center gap-[10px]">
+                  <h1>
+                    <img
+                      src={logo}
+                      alt="log"
+                      className="xl:h-[142px] h-[72px] w-[72px] xl:w-[142px]"
+                    />
+                  </h1>
+                  <span className="text-white font-bold text-[20px] xl:text-[32px] leading-[80%] ">
+                    BearBull
+                    <br /> DEX
+                  </span>
+                </div>
+
+                <div onClick={handleNav}>
+                  <img
+                    src={close}
+                    alt=""
+                  />
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="relative mt-8 mb-20">
+                <img
+                  src={money}
+                  alt=""
+                  className="absolute -top-6 -right-6"
+                />
+                <button className="text-black h-[61px] w-[162px] bg-white font-bold text-[24px]">
+                  Buy BBT
+                </button>
+                <button className="text-white h-[61px] w-[162px] border-white border-[3px] font-semibold text-[24px]">
+                  $0.2271
+                </button>
+              </div>
+
+              {/* List */}
+              <div className="flex flex-col h-full items-center gap-10 w-full">
+                <ul className="flex flex-col gap-10">
+                  {/* 1 */}
+                  <li className="flex font-medium text-white items-center gap-5 text-[24px] leading-[80%]">
+                    <img
+                      src={drop}
+                      alt=""
+                    />
+                    <span>
+                      BearBull <br />
+                      Protocols
+                    </span>
+                  </li>
+                  {/* 2 */}
+                  <li className="flex font-medium text-white items-center gap-5 text-[24px] leading-[80%]">
+                    <img
+                      src={drop}
+                      alt=""
+                    />
+
+                    <span>
+                      BearBull <br />
+                      Token
+                    </span>
+                  </li>
+                  {/* wallet */}
+                  <li className="flex font-medium text-white items-center gap-5 text-[24px] leading-[80%]">
+                    <img
+                      src={wallet}
+                      alt=""
+                    />
+                    <span>
+                      Connect <br />
+                      Wallet
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Social Media */}
+              <div className="flex mt-10">
+                <img
+                  src={tg}
+                  alt=""
+                  className="w-[40px] h-[40px]"
+                />
+                <img
+                  src={tw}
+                  alt=""
+                  className="w-[42px] h-[42px]"
+                />
+                <img
+                  src={dk}
+                  alt=""
+                  className="w-[42px] h-[42px]"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </header>
