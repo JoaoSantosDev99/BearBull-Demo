@@ -7,12 +7,16 @@ import { ethers } from "ethers";
 import PostFooter from "./components/PostFooter";
 import PreFooter from "./components/PreFooter";
 import Header from "./components/Header";
+import Hero from "./Hero";
+import Main from "./Main";
 
 function App() {
   return (
     <React.Fragment>
       <BrowserRouter>
         <Header />
+        <Hero />
+        <Main />
 
         {/* Footer */}
         <PreFooter />

@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 
 import logo from "../../assets/Logos/footerLogo.svg";
 import drop from "../../assets/icons/drop.png";
-import wallet from "../../assets/icons/wallet.png";
+import wallet from "../../assets/icons/wallet2.png";
 import haburger from "../../assets/icons/mobile.png";
 import close from "../../assets/icons/close.png";
 import money from "../../assets/icons/money.png";

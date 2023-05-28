@@ -7,14 +7,14 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { Web3Modal } from "@web3modal/react";
 import { modalConnectors, walletConnectProvider } from "@web3modal/ethereum";
 import { EthereumClient } from "@web3modal/ethereum";
-import { puppynet } from "./puppynet.ts";
+import { goerli } from "wagmi/chains";
 import * as te from "tw-elements";
 
-const chains = [puppynet];
+const chains = [goerli];
 
 // Wagmi client
 const { provider } = configureChains(
-  [puppynet],
+  [goerli],
   [walletConnectProvider({ projectId: "2f1f53444758c9a32897f70a77b810ef" })]
 );
 
