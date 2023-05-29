@@ -2,11 +2,11 @@ const ShortTableItem = ({ index }) => {
   const data = "test";
   return (
     <tr
-      className={`bg-${
+      className={
         index % 2 !== 0
-          ? "black"
-          : "gradient-to-r from-[#191919] via-[#181818] to-[#000]"
-      } font-semibold text-white`}
+          ? "bg-black font-semibold text-white"
+          : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+      }
     >
       <th
         scope="row"

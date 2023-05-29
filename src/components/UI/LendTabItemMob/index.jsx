@@ -9,11 +9,11 @@ const LendTableItemMob = ({ index }) => {
     <>
       <tr
         onClick={() => setShowButtons((e) => !e)}
-        className={`bg-${
+        className={
           index % 2 !== 0
-            ? "black"
-            : "gradient-to-r from-[#191919] via-[#181818] to-[#000]"
-        } font-semibold text-white`}
+            ? "bg-black font-semibold text-white"
+            : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+        }
       >
         <th
           scope="row"
@@ -37,11 +37,11 @@ const LendTableItemMob = ({ index }) => {
 
       {showButtons && (
         <div
-          className={`bg-${
+          className={
             index % 2 !== 0
-              ? "black"
-              : "gradient-to-r from-[#191919] via-[#181818] to-[#000]"
-          } py-2 text-white w-full flex justify-center gap-5`}
+              ? "bg-black font-semibold text-white"
+              : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+          }
         >
           {/* lend */}
           <div className="w-[160px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]">

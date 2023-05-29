@@ -9,11 +9,11 @@ const TableItemMob = ({ index }) => {
     <>
       <tr
         onClick={() => setShowButtons((prevState) => !prevState)}
-        className={`bg-${
+        className={
           index % 2 !== 0
-            ? "black"
-            : "gradient-to-r from-[#191919] via-[#181818] to-[#000]"
-        } font-thin text-[16px] text-white`}
+            ? "bg-black font-semibold text-white"
+            : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+        }
       >
         <th
           scope="row"
@@ -47,11 +47,11 @@ const TableItemMob = ({ index }) => {
       </tr>
       {showButtons && (
         <div
-          className={`bg-${
+          className={
             index % 2 !== 0
-              ? "black"
-              : "gradient-to-r from-[#191919] via-[#181818] to-[#000]"
-          } py-2 text-white flex justify-evenly`}
+              ? "bg-black font-semibold text-white"
+              : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+          }
         >
           {/* short */}
           <div className="w-[180px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]">
