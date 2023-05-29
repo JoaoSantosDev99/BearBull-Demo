@@ -8,7 +8,7 @@ const Hero = () => {
     <section className="w-full flex justify-center mb-20">
       <div className="max-w-screen-2xl w-full px-7 md:px-6">
         {/* Title */}
-        <div className="flex flex-col mt-44 md:mt-96">
+        <div className="text-white flex flex-col mt-44 md:mt-96">
           <h2 className="font-bold leading-[43px] md:leading-snug mt-20 md:mt-0 text-[50px] md:text-[115px]">
             BearBull <br className="md:hidden" /> Protocol
           </h2>

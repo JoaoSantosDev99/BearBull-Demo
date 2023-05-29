@@ -2,12 +2,14 @@ import TableItem from "./components/UI/TableItem";
 import drop from "./assets/icons/drop.png";
 import TableItemMob from "./components/UI/TableItemMob";
 import PreFooter from "./components/PreFooter";
+import Hero from "./Hero";
 
 const Main = () => {
   return (
     <section className="w-full flex justify-center">
       <div className="max-w-screen-2xl w-full">
-        <div class="relative overflow-x-auto">
+        <Hero />
+        <div class="relative mt-52 overflow-x-auto">
           {/* Desktop */}
           <div className="hidden lg:flex">
             <table className="w-full text-sm text-left">

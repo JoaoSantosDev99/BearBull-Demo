@@ -17,8 +17,7 @@ function App() {
     <React.Fragment>
       <BrowserRouter>
         <Header />
-        {/* <Hero />
-        <Main /> */}
+
         <Routes>
           <Route
             path="/"
