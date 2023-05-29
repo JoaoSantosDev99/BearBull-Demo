@@ -8,7 +8,6 @@ import { Web3Modal } from "@web3modal/react";
 import { modalConnectors, walletConnectProvider } from "@web3modal/ethereum";
 import { EthereumClient } from "@web3modal/ethereum";
 import { goerli } from "wagmi/chains";
-import * as te from "tw-elements";
 
 const chains = [goerli];
 
