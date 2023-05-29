@@ -1,6 +1,7 @@
 import TableItem from "./components/UI/TableItem";
 import drop from "./assets/icons/drop.png";
 import TableItemMob from "./components/UI/TableItemMob";
+import PreFooter from "./components/PreFooter";
 
 const Main = () => {
   return (
@@ -106,7 +107,7 @@ const Main = () => {
 
           {/* Mobile */}
           <div className="lg:hidden w-full flex justify-center">
-            <table className="flex flex-col items-center">
+            <table className="w-full flex flex-col items-center">
               <thead className="text-white w-full font-normal">
                 <tr className="text-[18px] flex justify-evenly xl:text-[19px]">
                   <th
@@ -180,6 +181,7 @@ const Main = () => {
             </table>
           </div>
         </div>
+        <PreFooter />
       </div>
     </section>
   );
