@@ -39,15 +39,15 @@ const LendTableItemMob = ({ index }) => {
         <div
           className={
             index % 2 !== 0
-              ? "bg-black font-semibold text-white"
-              : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+              ? "bg-black flex justify-center py-3 gap-5 font-semibold text-white"
+              : "bg-gradient-to-r py-3 flex justify-center gap-5 from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
           }
         >
           {/* lend */}
           <div className="w-[160px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]">
             <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
               <div className="w-full h-full text-[#28FDD7] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
-                Close Position
+                Claim Rewards
               </div>
             </div>
           </div>
@@ -56,7 +56,7 @@ const LendTableItemMob = ({ index }) => {
           <div className="w-[160px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]">
             <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
               <div className="w-full h-full text-[#D34253] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
-                Claim Rewards
+                Close Position
               </div>
             </div>
           </div>

@@ -166,10 +166,10 @@ const Header = () => {
                   alt=""
                   className="absolute -top-6 -right-6"
                 />
-                <button className="text-black h-[61px] w-[162px] bg-white font-bold text-[24px]">
+                <button className="text-black h-[61px] w-[150px] bg-white font-bold text-[24px]">
                   Buy BBT
                 </button>
-                <button className="text-white h-[61px] w-[162px] border-white border-[3px] font-semibold text-[24px]">
+                <button className="text-white h-[61px] w-[150px] border-white border-[3px] font-semibold text-[24px]">
                   $0.2271
                 </button>
               </div>

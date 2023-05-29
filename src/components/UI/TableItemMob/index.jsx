@@ -49,8 +49,8 @@ const TableItemMob = ({ index }) => {
         <div
           className={
             index % 2 !== 0
-              ? "bg-black font-semibold text-white"
-              : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+              ? "bg-black flex justify-center py-3 gap-5 font-semibold text-white"
+              : "bg-gradient-to-r py-3 flex justify-center gap-5 from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
           }
         >
           {/* short */}

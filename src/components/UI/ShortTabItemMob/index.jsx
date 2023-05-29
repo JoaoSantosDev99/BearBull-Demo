@@ -44,11 +44,11 @@ const ShortTableItemMob = ({ index }) => {
 
       {showButtons && (
         <div
-          className={`bg-${
+          className={
             index % 2 !== 0
-              ? "black"
-              : "gradient-to-r from-[#191919] via-[#181818] to-[#000]"
-          } py-2 text-white w-full flex justify-end px-5 gap-5`}
+              ? "bg-black flex justify-center py-3 gap-5 font-semibold text-white"
+              : "bg-gradient-to-r py-3 flex justify-center gap-5 from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+          }
         >
           {/* short */}
           <div className="w-[160px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]">
