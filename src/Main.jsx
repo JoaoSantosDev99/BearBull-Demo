@@ -89,7 +89,7 @@ const Main = () => {
           {/* Mobile */}
           <div className="lg:hidden w-full flex justify-center">
             <table className="w-full flex flex-col items-center">
-              <thead className="text-white w-full font-normal">
+              <thead className="text-white min-w-[390px] sm:min-w-[420px] md:min-w-[510px] font-normal">
                 <tr className="text-[18px] flex justify-evenly xl:text-[19px]">
                   <th
                     scope="col"
@@ -144,20 +144,15 @@ const Main = () => {
 
               {/* Body */}
               <tbody>
-                <TableItemMob index={1} />
-                <TableItemMob index={2} />
-                <TableItemMob index={1} />
-                <TableItemMob index={2} />
-                <TableItemMob index={1} />
-                <TableItemMob index={2} />
-                <TableItemMob index={1} />
-                <TableItemMob index={2} />
-                <TableItemMob index={1} />
-                <TableItemMob index={2} />
-                <TableItemMob index={1} />
-                <TableItemMob index={2} />
-                <TableItemMob index={1} />
-                <TableItemMob index={2} />
+                {TokenList.map((i, index) => (
+                  <TableItemMob
+                    address={i.address}
+                    name={i.name}
+                    ticker={i.ticker}
+                    key={index}
+                    index={1}
+                  />
+                ))}
               </tbody>
             </table>
           </div>

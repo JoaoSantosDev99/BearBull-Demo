@@ -9,7 +9,6 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 
 const TableItem = ({ index, name, ticker, address }) => {
-  // const [total, settotal] = useState(0);
   const [inOrd, setInOrd] = useState(0);
   const [pool, setPool] = useState(0);
   const [tsupply, settsupply] = useState(0);
@@ -38,8 +37,6 @@ const TableItem = ({ index, name, ticker, address }) => {
 
     fetchData();
   }, []);
-
-  console.log(typeof Number(pool) / Number(tsupply));
 
   return (
     <tr
