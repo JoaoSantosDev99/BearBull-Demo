@@ -4,12 +4,14 @@ import TableItemMob from "./components/UI/TableItemMob";
 import PreFooter from "./components/PreFooter";
 import Hero from "./Hero";
 
+import TokenList from "./constants/Tokens.json";
+
 const Main = () => {
   return (
-    <section className="w-full flex justify-center">
+    <section className="w-full flex flex-col items-center justify-center">
+      <Hero />
       <div className="max-w-screen-2xl w-full">
-        <Hero />
-        <div class="relative mt-52 overflow-x-auto">
+        <div class="relative -mt-14 overflow-x-auto">
           {/* Desktop */}
           <div className="hidden lg:flex">
             <table className="w-full text-sm text-left">
@@ -71,38 +73,15 @@ const Main = () => {
 
               {/* Body */}
               <tbody>
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-              </tbody>
-
-              {/* Body */}
-              <tbody>
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
-                <TableItem index={1} />
-                <TableItem index={2} />
+                {TokenList.map((item, index) => (
+                  <TableItem
+                    index={index}
+                    address={item.address}
+                    name={item.name}
+                    ticker={item.ticker}
+                    key={index}
+                  />
+                ))}
               </tbody>
             </table>
           </div>

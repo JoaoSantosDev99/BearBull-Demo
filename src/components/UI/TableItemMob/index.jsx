@@ -1,6 +1,7 @@
 import { useState } from "react";
 import down from "../../../assets/icons/down.png";
 import up from "../../../assets/icons/lend.png";
+import { Link } from "react-router-dom";
 
 const TableItemMob = ({ index }) => {
   const [showButtons, setShowButtons] = useState(false);
@@ -54,30 +55,34 @@ const TableItemMob = ({ index }) => {
           }
         >
           {/* short */}
-          <div className="w-[180px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]">
-            <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
-              <div className="w-full h-full text-[#D34253] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
-                <img
-                  src={down}
-                  alt=""
-                />{" "}
-                Short
+          <Link to={`/short/doge`}>
+            <div className="w-[180px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]">
+              <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
+                <div className="w-full h-full text-[#D34253] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
+                  <img
+                    src={down}
+                    alt=""
+                  />{" "}
+                  Short
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* lend */}
-          <div className="w-[180px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]">
-            <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
-              <div className="w-full h-full text-[#28FDD7] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
-                <img
-                  src={up}
-                  alt=""
-                />{" "}
-                Lend
+          <Link to={`/lend/doge`}>
+            <div className="w-[180px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]">
+              <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
+                <div className="w-full h-full text-[#28FDD7] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
+                  <img
+                    src={up}
+                    alt=""
+                  />{" "}
+                  Lend
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
       )}
     </>

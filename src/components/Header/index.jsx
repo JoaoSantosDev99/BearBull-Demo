@@ -40,7 +40,7 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full bg-black flex justify-center">
+    <header className="w-full absolute top-0 flex justify-center">
       <div className="flex max-w-screen-2xl px-3 py-5 xl:py-14 w-full justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-[20px]">

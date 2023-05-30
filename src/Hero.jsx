@@ -5,7 +5,7 @@ import wallet from "./assets/icons/wallet.png";
 
 const Hero = () => {
   return (
-    <section className="w-full flex justify-center mb-20">
+    <section className="bg-center bg-cover bg-no-repeat bg-[url('./assets/main.jpg')] pb-64 w-full flex justify-center">
       <div className="max-w-screen-2xl w-full px-7 md:px-6">
         {/* Title */}
         <div className="text-white flex flex-col mt-44 md:mt-96">
