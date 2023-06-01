@@ -66,23 +66,36 @@ const Header = () => {
         <div className="hidden lg:flex gap-2">
           {/* Price */}
           <div className="flex">
-            <button className="h-[50px] mr-1 flex justify-center items-center text-white w-[70px] border-white border-[3px] font-semibold text-[20px]">
-              <img
-                src={home}
-                alt=""
-                className="w-8 h-8"
-              />
-            </button>
-            <button className="h-[50px] w-[162px] bg-white font-bold text-[20px]">
-              Buy BBT
-            </button>
-            <button className="h-[50px] bg-black flex justify-center items-center text-white  w-[90px] border-white border-[3px] font-semibold text-[20px]">
-              <img
-                src={pancake}
-                alt=""
-                className="w-8 h-8"
-              />
-            </button>
+            <a
+              href="https://bearbull.finance/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <button className="h-[50px] mr-1 flex justify-center items-center text-white w-[70px] border-white border-[3px] font-semibold text-[20px]">
+                <img
+                  src={home}
+                  alt=""
+                  className="w-8 h-8"
+                />
+              </button>
+            </a>
+            <a
+              href="https://pancakeswap.finance/swap?outputCurrency=0x4F0F2fA439C6454B4664f3C4432514Ec07c1bC28&inputCurrency=BNB"
+              target="_blank"
+              rel="noreferrer"
+              className="flex"
+            >
+              <button className="h-[50px] w-[162px] bg-white font-bold text-[20px]">
+                Buy BBT
+              </button>
+              <button className="h-[50px] bg-black flex justify-center items-center text-white  w-[90px] border-white border-[3px] font-semibold text-[20px]">
+                <img
+                  src={pancake}
+                  alt=""
+                  className="w-8 h-8"
+                />
+              </button>
+            </a>
           </div>
 
           {/* Connect */}
@@ -152,15 +165,20 @@ const Header = () => {
               >
                 {isConnected ? addressShortener(address) : "Connect Wallet"}
               </button>
-
-              <button className="h-[50px] gap-4 mt-5 mr-1 flex justify-center items-center text-white px-3 border-white border-[3px] font-semibold text-[20px]">
-                <img
-                  src={home}
-                  alt=""
-                  className="w-8 h-8"
-                />{" "}
-                Home page
-              </button>
+              <a
+                href="https://bearbull.finance/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <button className="h-[50px] gap-4 mt-5 mr-1 flex justify-center items-center text-white px-3 border-white border-[3px] font-semibold text-[20px]">
+                  <img
+                    src={home}
+                    alt=""
+                    className="w-8 h-8"
+                  />{" "}
+                  Home page
+                </button>
+              </a>
 
               <ul className="flex flex-col mt-7 font-bold text-xl gap-4 items-center">
                 <li>About</li>
@@ -170,18 +188,25 @@ const Header = () => {
               </ul>
 
               {/* Price */}
-              <div className="flex mt-16">
-                <button className="h-[50px] text-black w-[162px] bg-white font-bold text-[20px]">
-                  Buy BBT
-                </button>
-                <button className="h-[50px] bg-black flex justify-center items-center text-white  w-[90px] border-white border-[3px] font-semibold text-[20px]">
-                  <img
-                    src={pancake}
-                    alt=""
-                    className="w-8 h-8"
-                  />
-                </button>
-              </div>
+              <a
+                href="https://pancakeswap.finance/swap?outputCurrency=0x4F0F2fA439C6454B4664f3C4432514Ec07c1bC28&inputCurrency=BNB"
+                target="_blank"
+                rel="noreferrer"
+                className="flex"
+              >
+                <div className="flex mt-16">
+                  <button className="h-[50px] text-black w-[162px] bg-white font-bold text-[20px]">
+                    Buy BBT
+                  </button>
+                  <button className="h-[50px] bg-black flex justify-center items-center text-white  w-[90px] border-white border-[3px] font-semibold text-[20px]">
+                    <img
+                      src={pancake}
+                      alt=""
+                      className="w-8 h-8"
+                    />
+                  </button>
+                </div>
+              </a>
 
               {/* Social Media */}
               <div className="flex mt-10">

@@ -10,23 +10,6 @@ const PreFooter = () => {
         <br className="hidden sm:flex" /> expanding list of available
         cryptocurrencies
       </spans>
-      <div className="flex mt-4 justify-center items-center">
-        <img
-          src={tg}
-          alt=""
-          className="w-[40px]"
-        />
-        <img
-          src={tw}
-          alt=""
-          className="w-[42px]"
-        />
-        <img
-          src={dk}
-          alt=""
-          className="w-[42px]"
-        />
-      </div>
     </div>
   );
 };
