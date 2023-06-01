@@ -8,6 +8,7 @@ import ercAbi from "../../../contracts/erc-20.json";
 import { ethers } from "ethers";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/appContext";
+import { fiveDecimals } from "../../../utils";
 
 const TableItem = ({ index, name, ticker, address }) => {
   const [inOrd, setInOrd] = useState(0);
@@ -56,8 +57,8 @@ const TableItem = ({ index, name, ticker, address }) => {
       <td className="px-6 py-4 text-center">{ticker}</td>
       <td className="px-6 py-4 text-center">$xx,xxx</td>
       <td className="px-6 py-4 text-end">xx%</td>
-      <td className="px-6 py-4 text-end">{pool / tsupply}%</td>
-      <td className="px-6 py-4">{inOrd / pool}%</td>
+      <td className="px-6 py-4 text-end">{fiveDecimals(pool / tsupply)}%</td>
+      <td className="px-6 py-4">{fiveDecimals(inOrd / pool)}%</td>
 
       {/* buttons */}
       <td className="px-6 py-4 flex gap-2">

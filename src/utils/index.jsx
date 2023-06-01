@@ -11,5 +11,5 @@ export const twoDecimals = (num) => {
 };
 
 export const fiveDecimals = (num) => {
-  return Math.trunc(num * 10000) / 10000;
+  return Math.trunc(num * 100000) / 100000;
 };
