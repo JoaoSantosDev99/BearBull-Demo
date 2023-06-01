@@ -21,10 +21,13 @@ const Lend = () => {
   // window.scrollTo({ top: 0 });
 
   const { contAdd } = useContext(AppContext);
-
+  const [currentBlock, setCurrentBlock] = useState(35467298);
   const [dateVal, setdateVal] = useState(0);
   const [userBal, setUserbal] = useState(0);
   const [bnbVal, setbnbVal] = useState(0);
+
+  const [orderAmount, setorderAmount] = useState(0);
+  const [orderEndTime, setorderEndTime] = useState(0);
 
   const [inputAmount, setinputAmount] = useState();
   const [percVal, setpercVal] = useState(0);
@@ -41,17 +44,32 @@ const Lend = () => {
   const readContract = new ethers.Contract(contAdd, abi, statProv);
   const readTokenContract = new ethers.Contract(tokenAdd, ercAbi, statProv);
 
+  const fetchData = async () => {
+    if (isConnected) {
+      const userBal = await readTokenContract.balanceOf(address);
+      const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
+
+      const lendInfo = await readContract.lendMap(address);
+      console.log(lendInfo);
+
+      const ordAmount = ethers.utils.formatUnits(lendInfo.amount, 0);
+      const ordEndtime = ethers.utils.formatUnits(lendInfo.endTime, 0);
+
+      setorderAmount(ordAmount);
+      setorderEndTime(ordEndtime);
+
+      setUserbal(formated);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await readContract.shortMap(address);
+    setInterval(async () => {
+      const currenBlock = statProv.blockNumber;
+      const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
+      setCurrentBlock(timestamp);
+      console.log(timestamp);
+    }, 5000);
 
-      if (isConnected) {
-        const userBal = await readTokenContract.balanceOf(address);
-        const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
-
-        setUserbal(formated);
-      }
-    };
     fetchData();
   }, []);
 
@@ -66,14 +84,18 @@ const Lend = () => {
     const wTkContract = new ethers.Contract(tokenAdd, ercAbi, signer);
 
     try {
-      const approve = await wTkContract.approve(contAdd, inputAmount);
+      const approve = await wTkContract.approve(
+        contAdd,
+        ethers.utils.parseEther(inputAmount)
+      );
+
       await approve.wait();
-      console.log(inputAmount, dateVal);
 
       const lend = await writeContract.lendTokens(inputAmount, dateVal);
 
       await lend.wait();
       alert("succedd");
+      fetchData();
     } catch (error) {
       console.log(error);
       console.log("error");
@@ -83,22 +105,12 @@ const Lend = () => {
   const closeLend = async () => {
     if (!isConnected) return alert("Not connected!");
 
-    // const coll = await readContract.getCollateral(inputAmount, percVal);
-
     const writeContract = new ethers.Contract(contAdd, abi, signer);
 
     try {
-      // const coll = await readContract.getCollateral("20", "100");
-      const coll = await readContract.getCollateral(inputAmount, 100);
+      const closePos = await writeContract.withdrawTokens();
 
-      console.log(ethers.utils.formatEther(coll), "form inp");
-      console.log(coll, "input");
-
-      const openShort = await writeContract.openShort(inputAmount, 100, {
-        value: coll,
-      });
-
-      // await openShort.wait();
+      await closePos.wait();
       alert("success");
     } catch (error) {
       console.log(error);
@@ -240,7 +252,7 @@ const Lend = () => {
 
           {/* Buttons */}
           <div className="flex gap-3 mb-16 w-[370px] sm:w-[570px] md:w-[95%] lg:w-[90%] font-medium">
-            <button className="w-[173px] h-[53px] rounded-[53px] border-2">
+            {/* <button className="w-[173px] h-[53px] rounded-[53px] border-2">
               <div className="w-full h-full text-[#ffffff] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
                 <img
                   src={lock}
@@ -248,7 +260,7 @@ const Lend = () => {
                 />{" "}
                 Approve
               </div>
-            </button>
+            </button> */}
 
             <button
               onClick={lend}
@@ -275,13 +287,6 @@ const Lend = () => {
         <div className="hidden md:w-[95%] lg:w-[90%] md:flex">
           <table className="w-full text-sm text-left">
             <thead className="text-white font-normal relative">
-              <button className="absolute hidden md:flex right-2 bottom-2 font-bold text-[16px] text-[#D34253] items-center gap-2">
-                <img
-                  src={cancel}
-                  alt=""
-                />{" "}
-                Cancel All
-              </button>
               <tr className="text-[18px] border-b-[2px] xl:text-[19px]">
                 <th
                   scope="col"
@@ -294,34 +299,27 @@ const Lend = () => {
                   scope="col"
                   class="px-2 xl:px-6 text-end py-3"
                 >
-                  Supply Pooled
+                  Amount
                 </th>
 
                 <th
                   scope="col"
                   class="px-2 xl:px-6 text-end py-3"
                 >
-                  Rewards Pooled
+                  End Time
                 </th>
               </tr>
             </thead>
 
             {/* Body */}
             <tbody className="border-b-2">
-              <LendTableItem index={1} />
-              <LendTableItem index={2} />
-              <LendTableItem index={1} />
-              <LendTableItem index={2} />
-              <LendTableItem index={1} />
-              <LendTableItem index={2} />
-              <LendTableItem index={1} />
-              <LendTableItem index={2} />
-              <LendTableItem index={1} />
-              <LendTableItem index={2} />
-              <LendTableItem index={1} />
-              <LendTableItem index={2} />
-              <LendTableItem index={1} />
-              <LendTableItem index={2} />
+              <LendTableItem
+                name={Tokens[id].name}
+                amount={orderAmount}
+                endTime={orderEndTime - currentBlock}
+                index={1}
+                close={closeLend}
+              />
             </tbody>
           </table>
         </div>
@@ -392,13 +390,6 @@ const Lend = () => {
               Back
             </button>
           </Link>
-          <button className="md:hidden flex font-bold text-[16px] text-[#D34253] items-center gap-2">
-            <img
-              src={cancel}
-              alt=""
-            />{" "}
-            Cancel All
-          </button>
         </div>
       </div>
     </section>
