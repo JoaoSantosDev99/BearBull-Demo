@@ -16,36 +16,45 @@ import { useContext, useEffect, useState } from "react";
 
 import { ethers } from "ethers";
 import abi from "./contracts/contract.json";
+import ercAbi from "./contracts/erc-20.json";
+
 import { AppContext } from "./context/appContext";
 import { useAccount, useSigner } from "wagmi";
+import { twoDecimals } from "./utils";
 
 const Short = () => {
   // window.scrollTo({ top: 0 });
   const { contAdd } = useContext(AppContext);
   const [entryPrice, setentryPrice] = useState(0);
   const [ethVal, setethVal] = useState(0);
+  const [userBal, setUserbal] = useState(0);
+
+  const [inputAmount, setinputAmount] = useState();
+  const [percVal, setpercVal] = useState(0);
 
   const { id } = useParams();
   const { data: signer } = useSigner();
   const { address, isConnected } = useAccount();
-
-  console.log("id", Tokens[id]);
 
   const statProv = new ethers.providers.JsonRpcProvider(
     "https://rpc.ankr.com/bsc"
   );
 
   const shortToken = Tokens[id].address;
+  // ercAbi
   const readContract = new ethers.Contract(contAdd, abi, statProv);
+  const readTokenContract = new ethers.Contract(shortToken, ercAbi, statProv);
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await readContract.shortMap(address);
 
-      console.log(data);
-      console.log("start price", ethers.utils.formatUnits(data.startPrice, 18));
-      console.log("amount", ethers.utils.formatUnits(data.amount, 0));
-      console.log("eth", ethers.utils.formatEther(data.ethValue));
+      if (isConnected) {
+        const userBal = await readTokenContract.balanceOf(address);
+        const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
+
+        setUserbal(formated);
+      }
 
       setentryPrice(
         Number(ethers.utils.formatUnits(data.startPrice, 18)).toFixed(5)
@@ -66,6 +75,47 @@ const Short = () => {
       await cancel.wait();
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const openShort = async () => {
+    if (!isConnected) return alert("Not connected!");
+
+    // const coll = await readContract.getCollateral(inputAmount, percVal);
+
+    const writeContract = new ethers.Contract(contAdd, abi, signer);
+
+    try {
+      // const coll = await readContract.getCollateral("20", "100");
+      const coll = await readContract.getCollateral(inputAmount, 100);
+
+      console.log(ethers.utils.formatEther(coll), "form inp");
+      console.log(coll, "input");
+
+      const openShort = await writeContract.openShort(inputAmount, 100, {
+        value: coll,
+      });
+
+      // await openShort.wait();
+      alert("success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setinputAmount(e.target.value);
+  };
+
+  const handleInputPerc = (e) => {
+    const format = e.target.value.replace(/[^0-9 ]/g, "").replace("-", " ");
+
+    if (format < 0) {
+      return setpercVal(0);
+    } else if (format > 100) {
+      setpercVal(100);
+    } else {
+      setpercVal(format);
     }
   };
 
@@ -91,15 +141,20 @@ const Short = () => {
               </h3>
               <div className="relative">
                 <input
+                  onChange={handleInputChange}
+                  value={inputAmount}
                   min={0}
                   type="number"
                   placeholder="12.002"
                   className="placeholder:text-[#ffffff65] w-[328px] md:w-[465px] outline-none pb-7 text-[24px] md:text-[40px] p-3 h-[57px] md:h-[87px] bg-transparent border-2"
                 />
                 <button className="absolute left-5 bottom-2 text-[14px] md:text-[20px] opacity-30 font-normal">
-                  ≈ 0.0000025 BNB
+                  ≈ {userBal} {Tokens[id].ticker}
                 </button>
-                <button className="absolute right-2 top-1 text-[14px] md:text-[24px] font-bold">
+                <button
+                  onClick={() => setinputAmount(Number(userBal).toFixed(0))}
+                  className="absolute right-2 top-1 text-[14px] md:text-[24px] font-bold"
+                >
                   MAX
                 </button>
               </div>
@@ -108,10 +163,12 @@ const Short = () => {
             <div>
               <h3 className="text-[16px] md:text-[24px]">
                 Enter your Risk Tolerance, %
-                <span className="font-bold">{Tokens[id].ticker}</span>
               </h3>
               <div className="relative">
                 <input
+                  value={100}
+                  // value={percVal}
+                  onChange={handleInputPerc}
                   min={0}
                   max={100}
                   type="number"
@@ -188,7 +245,10 @@ const Short = () => {
               </div>
             </button>
 
-            <button className="w-[137px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]">
+            <button
+              onClick={openShort}
+              className="w-[137px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]"
+            >
               <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
                 <div className="w-full h-full text-[#D34253] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
                   <img

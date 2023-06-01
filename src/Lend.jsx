@@ -5,12 +5,129 @@ import drop from "./assets/icons/drop.png";
 import cancel from "./assets/icons/closeAll.png";
 import up from "./assets/icons/lend.png";
 import lock from "./assets/icons/lock.png";
-import pchart from "./assets/icons/piechart.png";
-import cal from "./assets/icons/cal.png";
+import Tokens from "./constants/Tokens.json";
+import { PieChart } from "react-minimal-pie-chart";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "./context/appContext";
+import { useAccount, useSigner } from "wagmi";
+import { ethers } from "ethers";
+
+import abi from "./contracts/contract.json";
+import ercAbi from "./contracts/erc-20.json";
+import { fiveDecimals, twoDecimals } from "./utils";
 
 const Lend = () => {
   const { id } = useParams();
-  window.scrollTo({ top: 0 });
+  // window.scrollTo({ top: 0 });
+
+  const { contAdd } = useContext(AppContext);
+
+  const [dateVal, setdateVal] = useState(0);
+  const [userBal, setUserbal] = useState(0);
+  const [bnbVal, setbnbVal] = useState(0);
+
+  const [inputAmount, setinputAmount] = useState();
+  const [percVal, setpercVal] = useState(0);
+
+  const { data: signer } = useSigner();
+  const { address, isConnected } = useAccount();
+
+  const statProv = new ethers.providers.JsonRpcProvider(
+    "https://rpc.ankr.com/bsc"
+  );
+
+  const tokenAdd = "0x4F0F2fA439C6454B4664f3C4432514Ec07c1bC28";
+
+  const readContract = new ethers.Contract(contAdd, abi, statProv);
+  const readTokenContract = new ethers.Contract(tokenAdd, ercAbi, statProv);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await readContract.shortMap(address);
+
+      if (isConnected) {
+        const userBal = await readTokenContract.balanceOf(address);
+        const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
+
+        setUserbal(formated);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handlaDateChange = (e) => {
+    setdateVal(e.target.value);
+  };
+
+  const lend = async () => {
+    if (!isConnected) return alert("Not connected!");
+
+    const writeContract = new ethers.Contract(contAdd, abi, signer);
+    const wTkContract = new ethers.Contract(tokenAdd, ercAbi, signer);
+
+    try {
+      const approve = await wTkContract.approve(contAdd, inputAmount);
+      await approve.wait();
+      console.log(inputAmount, dateVal);
+
+      const lend = await writeContract.lendTokens(inputAmount, dateVal);
+
+      await lend.wait();
+      alert("succedd");
+    } catch (error) {
+      console.log(error);
+      console.log("error");
+    }
+  };
+
+  const closeLend = async () => {
+    if (!isConnected) return alert("Not connected!");
+
+    // const coll = await readContract.getCollateral(inputAmount, percVal);
+
+    const writeContract = new ethers.Contract(contAdd, abi, signer);
+
+    try {
+      // const coll = await readContract.getCollateral("20", "100");
+      const coll = await readContract.getCollateral(inputAmount, 100);
+
+      console.log(ethers.utils.formatEther(coll), "form inp");
+      console.log(coll, "input");
+
+      const openShort = await writeContract.openShort(inputAmount, 100, {
+        value: coll,
+      });
+
+      // await openShort.wait();
+      alert("success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleInputChange = async (e) => {
+    setinputAmount(e.target.value);
+
+    const bnbWorth = await readContract.getValue(
+      ethers.utils.parseEther(e.target.value)
+    );
+
+    const formated = fiveDecimals(ethers.utils.formatUnits(bnbWorth, 18));
+    setbnbVal(formated);
+  };
+
+  const handleInputPerc = (e) => {
+    const format = e.target.value.replace(/[^0-9 ]/g, "").replace("-", " ");
+
+    if (format < 0) {
+      return setpercVal(0);
+    } else if (format > 100) {
+      setpercVal(100);
+    } else {
+      setpercVal(format);
+    }
+  };
+
   return (
     <section className="w-full flex justify-center">
       <div className="text-white max-w-screen-2xl flex flex-col w-full justify-center items-center">
@@ -19,8 +136,8 @@ const Lend = () => {
             <span className="text-[#28FDD7]">
               Land:
               <br className="md:hidden" />{" "}
-            </span>{" "}
-            {id}
+            </span>
+            {Tokens[id].name}
           </h2>
 
           {/* inputs */}
@@ -28,32 +145,41 @@ const Lend = () => {
             {/* Number */}
             <div>
               <h3 className="text-[16px] md:text-[24px]">
-                Enter an amount of <span className="font-bold">DINU</span>
+                Enter an amount of{" "}
+                <span className="font-bold">{Tokens[id].ticker}</span>
               </h3>
               <div className="relative">
                 <input
+                  onChange={handleInputChange}
+                  value={inputAmount}
                   min={0}
                   type="number"
                   placeholder="12.002"
                   className="placeholder:text-[#ffffff65] w-[328px] md:w-[465px] outline-none pb-7 text-[24px] md:text-[40px] p-3 h-[57px] md:h-[87px] bg-transparent border-2"
                 />
                 <button className="absolute left-5 bottom-2 text-[14px] md:text-[20px] opacity-30 font-normal">
-                  ≈ 0.0000025 BNB
+                  ≈ {bnbVal} BNB
                 </button>
-                <button className="absolute right-2 top-1 text-[14px] md:text-[24px] font-bold">
+                <button
+                  onClick={() => setinputAmount(userBal)}
+                  className="absolute right-2 top-1 text-[14px] md:text-[24px] font-bold"
+                >
                   MAX
                 </button>
               </div>
             </div>
+
             {/* Cal */}
             <div>
               <h3 className="text-[16px] md:text-[24px]">Select an End Time</h3>
               <div className="relative">
                 <input
+                  value={dateVal}
+                  onChange={handlaDateChange}
                   min={0}
-                  placeholder="DAte"
-                  type="date"
-                  className="w-[328px] md:w-[465px] outline-none text-[24px] md:text-[40px] p-3 h-[57px] md:h-[87px] bg-transparent border-2"
+                  placeholder="Lend time in hours"
+                  type="number"
+                  className="placeholder:text-[30px] w-[328px] md:w-[465px] outline-none text-[24px] md:text-[40px] p-3 h-[57px] md:h-[87px] bg-transparent border-2"
                 />
               </div>
             </div>
@@ -88,11 +214,15 @@ const Lend = () => {
 
             {/* chart */}
             <div className="flex w-[170px] md:w-auto justify-start">
-              <img
-                src={pchart}
-                alt=""
-                className="hidden lg:flex -mt-4 -mr-5"
-              />
+              <div className="hidden lg:flex mt-2 mr-4">
+                <PieChart
+                  style={{ width: "100px", height: "100px" }}
+                  data={[
+                    { title: "One", value: 10, color: "#ffffff17" },
+                    { title: "Two", value: 15, color: "#28FDD7" },
+                  ]}
+                />
+              </div>
 
               <div className="flex mt-1 justify-center flex-col">
                 <span className="text-[24px] lg:text-[40px] lg:leading-[35px] font-normal">
@@ -120,7 +250,10 @@ const Lend = () => {
               </div>
             </button>
 
-            <button className="w-[137px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]">
+            <button
+              onClick={lend}
+              className="w-[137px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]"
+            >
               <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
                 <div className="w-full h-full text-[#28FDD7] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
                   <img

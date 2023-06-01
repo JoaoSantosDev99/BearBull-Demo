@@ -5,3 +5,11 @@ export const addressShortener = (address) => {
 export const longAddressCrop = (address) => {
   return address.slice(0, 10) + " . . . " + address.slice(-10);
 };
+
+export const twoDecimals = (num) => {
+  return Math.trunc(num * 100) / 100;
+};
+
+export const fiveDecimals = (num) => {
+  return Math.trunc(num * 1000) / 1000;
+};
