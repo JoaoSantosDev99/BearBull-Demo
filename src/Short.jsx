@@ -25,12 +25,18 @@ import { twoDecimals } from "./utils";
 const Short = () => {
   // window.scrollTo({ top: 0 });
   const { contAdd } = useContext(AppContext);
-  const [entryPrice, setentryPrice] = useState(0);
-  const [ethVal, setethVal] = useState(0);
+
+  const [itemStartTime, setitemStartTime] = useState(0);
+  const [itemAmount, setitemAmount] = useState(0);
+  const [itemRiskTol, setitemRiskTol] = useState(0);
+
   const [userBal, setUserbal] = useState(0);
+  const [tokenAmPric, settokenAmPric] = useState();
 
   const [inputAmount, setinputAmount] = useState();
   const [percVal, setpercVal] = useState(0);
+
+  const [currentBlock, setCurrentBlock] = useState(1337);
 
   const { id } = useParams();
   const { data: signer } = useSigner();
@@ -45,22 +51,28 @@ const Short = () => {
   const readContract = new ethers.Contract(contAdd, abi, statProv);
   const readTokenContract = new ethers.Contract(shortToken, ercAbi, statProv);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await readContract.shortMap(address);
+  const getTokenPrice = async () => {};
 
+  useEffect(() => {
+    setInterval(async () => {
+      const currenBlock = statProv.blockNumber;
+      const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
+      setCurrentBlock(timestamp);
+      console.log(timestamp);
+    }, 5000);
+
+    const fetchData = async () => {
       if (isConnected) {
+        const data = await readContract.shortMap(address);
         const userBal = await readTokenContract.balanceOf(address);
         const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
 
-        setUserbal(formated);
+        console.log(data);
+
+        setitemAmount(ethers.utils.formatUnits(data.amount, 0));
+        setitemStartTime(ethers.utils.formatUnits(data.startTime, 0));
+        setitemRiskTol(ethers.utils.formatUnits(data.tolerance, 0));
       }
-
-      setentryPrice(
-        Number(ethers.utils.formatUnits(data.startPrice, 18)).toFixed(5)
-      );
-
-      setethVal(Number(ethers.utils.formatEther(data.ethValue)).toFixed(3));
     };
     fetchData();
   }, []);
@@ -73,6 +85,7 @@ const Short = () => {
     try {
       const cancel = await writeContract.closeShort();
       await cancel.wait();
+      alert("Success");
     } catch (error) {
       console.log(error);
     }
@@ -81,22 +94,16 @@ const Short = () => {
   const openShort = async () => {
     if (!isConnected) return alert("Not connected!");
 
-    // const coll = await readContract.getCollateral(inputAmount, percVal);
+    const coll = await readContract.getCollateral(inputAmount, 100);
 
     const writeContract = new ethers.Contract(contAdd, abi, signer);
-
+    console.log(coll);
     try {
-      // const coll = await readContract.getCollateral("20", "100");
-      const coll = await readContract.getCollateral(inputAmount, 100);
-
-      console.log(ethers.utils.formatEther(coll), "form inp");
-      console.log(coll, "input");
-
       const openShort = await writeContract.openShort(inputAmount, 100, {
         value: coll,
       });
 
-      // await openShort.wait();
+      await openShort.wait();
       alert("success");
     } catch (error) {
       console.log(error);
@@ -127,7 +134,7 @@ const Short = () => {
             <span className="text-[#D34253]">
               Short:
               <br className="md:hidden" />{" "}
-            </span>{" "}
+            </span>
             {Tokens[id].name}
           </h2>
 
@@ -235,7 +242,7 @@ const Short = () => {
 
           {/* Buttons */}
           <div className="flex gap-3 mb-16 w-[370px] sm:w-[570px] md:w-[95%] lg:w-[90%] font-medium">
-            <button className="w-[173px] h-[53px] rounded-[53px] border-2">
+            {/* <button className="w-[173px] h-[53px] rounded-[53px] border-2">
               <div className="w-full h-full text-[#ffffff] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
                 <img
                   src={lock}
@@ -243,7 +250,7 @@ const Short = () => {
                 />{" "}
                 Approve
               </div>
-            </button>
+            </button> */}
 
             <button
               onClick={openShort}
@@ -270,13 +277,13 @@ const Short = () => {
         <div className="hidden md:w-[95%] lg:w-[90%] md:flex">
           <table className="w-full text-sm text-left">
             <thead className="text-white font-normal relative">
-              <button className="absolute hidden md:flex right-2 bottom-2 font-bold text-[16px] text-[#D34253] items-center gap-2">
+              {/* <button className="absolute hidden md:flex right-2 bottom-2 font-bold text-[16px] text-[#D34253] items-center gap-2">
                 <img
                   src={cancel}
                   alt=""
                 />{" "}
                 Close All
-              </button>
+              </button> */}
               <tr className="text-[18px] border-b-[2px] xl:text-[19px]">
                 <th
                   scope="col"
@@ -288,19 +295,19 @@ const Short = () => {
                   scope="col"
                   class="px-2 xl:px-6 text-end py-3"
                 >
-                  Entry Price
+                  Amount
                 </th>
                 <th
                   scope="col"
                   class="px-2 xl:px-6 text-end py-3"
                 >
-                  Short Value
+                  Start Time
                 </th>
                 <th
                   scope="col"
                   class="px-2 xl:px-6 text-end py-3"
                 >
-                  PnL
+                  Risk Tolerace
                 </th>
               </tr>
             </thead>
@@ -308,11 +315,13 @@ const Short = () => {
             {/* Body */}
             <tbody className="border-b-2">
               <ShortTableItem
-                amount={ethVal}
-                entryP={entryPrice}
-                name={Tokens[id].name}
-                close={closeShort}
                 index={2}
+                name={Tokens[id].name}
+                amount={itemAmount}
+                startTime={itemStartTime}
+                riskTol={itemRiskTol}
+                block={currentBlock}
+                close={closeShort}
               />
             </tbody>
           </table>

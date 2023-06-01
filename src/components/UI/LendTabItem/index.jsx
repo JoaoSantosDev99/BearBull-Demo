@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 
-const LendTableItem = ({ index, name, amount, endTime, close }) => {
+const LendTableItem = ({ index, name, amount, endTime, close, block }) => {
   // window.scrollTo({ top: 0 });
 
   return (
@@ -17,8 +17,14 @@ const LendTableItem = ({ index, name, amount, endTime, close }) => {
       >
         {name}
       </th>
-      <td className="px-6 py-4 text-end">{amount}</td>
-      <td className="px-6 py-4 text-end">{endTime}s</td>
+      <td className="px-6 py-4 text-end">{amount === "0" ? "_" : amount}</td>
+      <td className="px-6 py-4 text-end">
+        {endTime === "0"
+          ? "_"
+          : block === 1337
+          ? "Loading"
+          : endTime - block + "s"}
+      </td>
 
       {/* buttons */}
       <td className="px-6 py-4 flex justify-end gap-2">

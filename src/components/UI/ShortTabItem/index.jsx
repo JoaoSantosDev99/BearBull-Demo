@@ -1,5 +1,12 @@
-const ShortTableItem = ({ name, entryP, amount, index, close }) => {
-  const data = "test";
+const ShortTableItem = ({
+  index,
+  name,
+  amount,
+  startTime,
+  riskTol,
+  close,
+  block,
+}) => {
   return (
     <tr
       className={
@@ -14,9 +21,17 @@ const ShortTableItem = ({ name, entryP, amount, index, close }) => {
       >
         {name}
       </th>
-      <td className="px-2 py-4 text-end">{entryP}</td>
-      <td className="px-2 py-4 text-end">{amount} BNB</td>
-      <td className="px-2 py-4 text-end">_.___ BNB</td>
+      <td className="px-2 py-4 text-end">{amount === "0" ? "__" : amount}</td>
+      <td className="px-2 py-4 text-end">
+        {block === 1337
+          ? "Loading"
+          : startTime === "0"
+          ? "__"
+          : block - startTime + "s ago"}
+      </td>
+      <td className="px-2 py-4 text-end">
+        {riskTol === "0" ? "__" : riskTol}%
+      </td>
 
       {/* buttons */}
       <td className="px-6 py-4 flex justify-end gap-2">

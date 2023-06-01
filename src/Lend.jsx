@@ -21,7 +21,7 @@ const Lend = () => {
   // window.scrollTo({ top: 0 });
 
   const { contAdd } = useContext(AppContext);
-  const [currentBlock, setCurrentBlock] = useState(35467298);
+  const [currentBlock, setCurrentBlock] = useState(1337);
   const [dateVal, setdateVal] = useState(0);
   const [userBal, setUserbal] = useState(0);
   const [bnbVal, setbnbVal] = useState(0);
@@ -316,7 +316,8 @@ const Lend = () => {
               <LendTableItem
                 name={Tokens[id].name}
                 amount={orderAmount}
-                endTime={orderEndTime - currentBlock}
+                endTime={orderEndTime}
+                block={currentBlock}
                 index={1}
                 close={closeLend}
               />
