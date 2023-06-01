@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import down from "../../../assets/icons/down.png";
 import up from "../../../assets/icons/lend.png";
 import { Link } from "react-router-dom";
@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 
 import abi from "../../../contracts/contract.json";
 import ercAbi from "../../../contracts/erc-20.json";
+import { AppContext } from "../../../context/appContext";
 
 const TableItemMob = ({ index, name, ticker, address }) => {
   const [showButtons, setShowButtons] = useState(false);
@@ -14,7 +15,8 @@ const TableItemMob = ({ index, name, ticker, address }) => {
   const [pool, setPool] = useState(0);
   const [tsupply, settsupply] = useState(0);
 
-  const contAdd = "0xc58C3B0C7485E1C8f9fEce6B5361D11b98dB2aDF";
+  const { contAdd } = useContext(AppContext);
+
   const statProv = new ethers.providers.JsonRpcProvider(
     "https://rpc.ankr.com/bsc"
   );
@@ -33,7 +35,7 @@ const TableItemMob = ({ index, name, ticker, address }) => {
       setPool(ethers.utils.formatUnits(poolFt, 0));
 
       const tsup = await readTokContract.totalSupply();
-      settsupply(ethers.utils.formatUnits(tsup, 0));
+      settsupply(ethers.utils.formatUnits(tsup, 18));
     };
 
     fetchData();
@@ -74,8 +76,8 @@ const TableItemMob = ({ index, name, ticker, address }) => {
           className="px-4 py-4 min-w-[130px] sm:min-w-[140px] md:min-w-[170px]"
         >
           <div className="flex flex-col items-end">
-            <span>{pool}</span>
-            <span>{inOrd}</span>
+            <span>{pool / tsupply}%</span>
+            <span>{pool / inOrd}%</span>
           </div>
         </th>
       </tr>

@@ -6,14 +6,15 @@ import abi from "../../../contracts/contract.json";
 import ercAbi from "../../../contracts/erc-20.json";
 
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../../context/appContext";
 
 const TableItem = ({ index, name, ticker, address }) => {
   const [inOrd, setInOrd] = useState(0);
   const [pool, setPool] = useState(0);
   const [tsupply, settsupply] = useState(0);
 
-  const contAdd = "0xc58C3B0C7485E1C8f9fEce6B5361D11b98dB2aDF";
+  const { contAdd } = useContext(AppContext);
   const statProv = new ethers.providers.JsonRpcProvider(
     "https://rpc.ankr.com/bsc"
   );
@@ -32,7 +33,7 @@ const TableItem = ({ index, name, ticker, address }) => {
       setPool(ethers.utils.formatUnits(poolFt, 0));
 
       const tsup = await readTokContract.totalSupply();
-      settsupply(ethers.utils.formatUnits(tsup, 0));
+      settsupply(ethers.utils.formatUnits(tsup, 18));
     };
 
     fetchData();
@@ -55,13 +56,13 @@ const TableItem = ({ index, name, ticker, address }) => {
       <td className="px-6 py-4 text-center">{ticker}</td>
       <td className="px-6 py-4 text-center">$xx,xxx</td>
       <td className="px-6 py-4 text-end">xx%</td>
-      <td className="px-6 py-4 text-end">{pool}</td>
-      <td className="px-6 py-4">{inOrd}</td>
+      <td className="px-6 py-4 text-end">{pool / tsupply}%</td>
+      <td className="px-6 py-4">{pool / inOrd}%</td>
 
       {/* buttons */}
       <td className="px-6 py-4 flex gap-2">
         {/* short */}
-        <Link to={`/short/${name}`}>
+        <Link to={`/short/${index}`}>
           <button className="w-[125px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]">
             <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
               <div className="w-full h-full text-[#D34253] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
@@ -75,7 +76,7 @@ const TableItem = ({ index, name, ticker, address }) => {
           </button>
         </Link>
         {/* lend */}
-        <Link to={`/lend/${name}`}>
+        <Link to={`/lend/${index}`}>
           <button className="w-[125px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]">
             <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
               <div className="w-full h-full text-[#28FDD7] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">

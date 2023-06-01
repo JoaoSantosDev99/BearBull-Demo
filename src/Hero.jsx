@@ -2,8 +2,27 @@ import tg from "./assets/icons/tg.svg";
 import tw from "./assets/icons/twtt.svg";
 import dk from "./assets/icons/dk.svg";
 import wallet from "./assets/icons/wallet.png";
+import { switchNetwork } from "@wagmi/core";
+import { useAccount, useNetwork } from "wagmi";
+import { useWeb3Modal } from "@web3modal/react";
+import { addressShortener } from "./utils";
 
 const Hero = () => {
+  const { chain } = useNetwork();
+  const { open } = useWeb3Modal();
+  const { address, isConnected } = useAccount();
+
+  const connectWallet = () => {
+    if (chain?.id !== 56) {
+      switchNetwork?.(56);
+    }
+
+    try {
+      open();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <section className="bg-center bg-cover bg-no-repeat bg-[url('./assets/main.jpg')] pb-64 w-full flex justify-center">
       <div className="max-w-screen-2xl w-full px-7 md:px-6">
@@ -20,8 +39,11 @@ const Hero = () => {
 
         {/* Connect */}
         <div className="flex flex-col items-start md:flex-row md:items-center flex-wrap gap-5 md:gap-10 mt-5 md:mt-20">
-          <button className="flex gap-4 justify-center items-center bg-white w-[233px] md:w-[293px] font-bold text-[20px] md:text-[24px] h-[61px]">
-            Connect Wallet
+          <button
+            onClick={connectWallet}
+            className="flex gap-4 justify-center items-center bg-white w-[233px] md:w-[293px] font-bold text-[20px] md:text-[24px] h-[61px]"
+          >
+            {isConnected ? addressShortener(address) : "Connect Wallet"}
             <img
               src={wallet}
               alt=""

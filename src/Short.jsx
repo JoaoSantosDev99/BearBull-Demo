@@ -9,10 +9,66 @@ import pchart from "./assets/icons/redpiech.png";
 import ShortTableItem from "./components/UI/ShortTabItem";
 import ShortTableItemMob from "./components/UI/ShortTabItemMob";
 
+import { Chart } from "react-google-charts";
+import { PieChart } from "react-minimal-pie-chart";
+import Tokens from "./constants/Tokens.json";
+import { useContext, useEffect, useState } from "react";
+
+import { ethers } from "ethers";
+import abi from "./contracts/contract.json";
+import { AppContext } from "./context/appContext";
+import { useAccount, useSigner } from "wagmi";
+
 const Short = () => {
-  window.scrollTo({ top: 0 });
+  // window.scrollTo({ top: 0 });
+  const { contAdd } = useContext(AppContext);
+  const [entryPrice, setentryPrice] = useState(0);
+  const [ethVal, setethVal] = useState(0);
 
   const { id } = useParams();
+  const { data: signer } = useSigner();
+  const { address, isConnected } = useAccount();
+
+  console.log("id", Tokens[id]);
+
+  const statProv = new ethers.providers.JsonRpcProvider(
+    "https://rpc.ankr.com/bsc"
+  );
+
+  const shortToken = Tokens[id].address;
+  const readContract = new ethers.Contract(contAdd, abi, statProv);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await readContract.shortMap(address);
+
+      console.log(data);
+      console.log("start price", ethers.utils.formatUnits(data.startPrice, 18));
+      console.log("amount", ethers.utils.formatUnits(data.amount, 0));
+      console.log("eth", ethers.utils.formatEther(data.ethValue));
+
+      setentryPrice(
+        Number(ethers.utils.formatUnits(data.startPrice, 18)).toFixed(5)
+      );
+
+      setethVal(Number(ethers.utils.formatEther(data.ethValue)).toFixed(3));
+    };
+    fetchData();
+  }, []);
+
+  const closeShort = async () => {
+    if (!isConnected) return alert("Not connected!");
+
+    const writeContract = new ethers.Contract(contAdd, abi, signer);
+
+    try {
+      const cancel = await writeContract.closeShort();
+      await cancel.wait();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <section className="w-full flex justify-center">
       <div className="text-white max-w-screen-2xl flex flex-col w-full justify-center items-center">
@@ -22,7 +78,7 @@ const Short = () => {
               Short:
               <br className="md:hidden" />{" "}
             </span>{" "}
-            {id}
+            {Tokens[id].name}
           </h2>
 
           {/* inputs */}
@@ -30,7 +86,8 @@ const Short = () => {
             {/* Number */}
             <div>
               <h3 className="text-[16px] md:text-[24px]">
-                Enter an amount of <span className="font-bold">DINU</span>
+                Enter an amount of{" "}
+                <span className="font-bold">{Tokens[id].ticker}</span>
               </h3>
               <div className="relative">
                 <input
@@ -50,7 +107,8 @@ const Short = () => {
             {/* % */}
             <div>
               <h3 className="text-[16px] md:text-[24px]">
-                Enter an amount of <span className="font-bold">DINU</span>
+                Enter your Risk Tolerance, %
+                <span className="font-bold">{Tokens[id].ticker}</span>
               </h3>
               <div className="relative">
                 <input
@@ -69,7 +127,7 @@ const Short = () => {
           </div>
 
           {/* stats */}
-          <div className="flex flex-col md:flex-row mb-5 md:mb-16 justify-start items-start md:items-center w-[350px] sm:w-[570px] md:w-[90%]">
+          <div className="flex gap-10 flex-col md:flex-row mb-5 md:mb-16 justify-start items-start md:items-center w-[350px] sm:w-[570px] md:w-[90%]">
             <div className="flex w-[170px] md:w-auto flex-col">
               <h2 className="text-[40px] lg:text-[60px] leading-[60px] font-light">
                 22 BNB
@@ -80,12 +138,29 @@ const Short = () => {
             </div>
 
             {/* chart */}
-            <div className="flex -ml-8 md:ml-0 w-[170px] md:w-auto justify-start">
-              <img
-                src={pchart}
-                alt=""
-                className="w-[150px] lg:flex"
-              />
+            <div className="flex gap-5 -ml-8 md:ml-0 w-[170px] md:w-auto justify-start">
+              <div className="hidden md:flex">
+                <PieChart
+                  style={{ width: "120px", height: "120px" }}
+                  data={[
+                    {
+                      title: "One",
+                      value: 10,
+                      color: "#131313",
+                    },
+                    { title: "Two", value: 15, color: "#C13C37" },
+                  ]}
+                />
+              </div>
+              <div className="md:hidden ml-7">
+                <PieChart
+                  style={{ width: "100px", height: "100px" }}
+                  data={[
+                    { title: "One", value: 10, color: "#ffffff17" },
+                    { title: "Two", value: 15, color: "#a12723" },
+                  ]}
+                />
+              </div>
 
               <div className="flex mb-6 md:mb-0 justify-center flex-col">
                 <span className="text-[24px] lg:text-[40px] lg:leading-[35px] font-normal">
@@ -172,20 +247,13 @@ const Short = () => {
 
             {/* Body */}
             <tbody className="border-b-2">
-              <ShortTableItem index={1} />
-              <ShortTableItem index={2} />
-              <ShortTableItem index={1} />
-              <ShortTableItem index={2} />
-              <ShortTableItem index={1} />
-              <ShortTableItem index={2} />
-              <ShortTableItem index={1} />
-              <ShortTableItem index={2} />
-              <ShortTableItem index={1} />
-              <ShortTableItem index={2} />
-              <ShortTableItem index={1} />
-              <ShortTableItem index={2} />
-              <ShortTableItem index={1} />
-              <ShortTableItem index={2} />
+              <ShortTableItem
+                amount={ethVal}
+                entryP={entryPrice}
+                name={Tokens[id].name}
+                close={closeShort}
+                index={2}
+              />
             </tbody>
           </table>
         </div>
