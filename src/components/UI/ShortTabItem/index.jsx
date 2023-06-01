@@ -6,7 +6,19 @@ const ShortTableItem = ({
   riskTol,
   close,
   block,
+  ticker,
 }) => {
+  const formatTime = (time) => {
+    const total = Number(time);
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = Math.floor((total % 3600) % 60);
+
+    const hDisplay = h > 0 ? h + (h === 1 ? " h, " : " h, ") : "";
+    const mDisplay = m > 0 ? m + (m === 1 ? " min, " : " min, ") : "";
+    const sDisplay = s > 0 ? s + (s === 1 ? " s" : " s") : "";
+    return hDisplay + mDisplay + sDisplay;
+  };
   return (
     <tr
       className={
@@ -21,13 +33,15 @@ const ShortTableItem = ({
       >
         {name}
       </th>
-      <td className="px-2 py-4 text-end">{amount === "0" ? "__" : amount}</td>
+      <td className="px-2 py-4 text-end">
+        {amount === "0" ? "__" : amount} ${ticker}
+      </td>
       <td className="px-2 py-4 text-end">
         {block === 1337
           ? "Loading"
           : startTime === "0"
           ? "__"
-          : block - startTime + "s ago"}
+          : formatTime(block - startTime) + " ago"}
       </td>
       <td className="px-2 py-4 text-end">
         {riskTol === "0" ? "__" : riskTol}%

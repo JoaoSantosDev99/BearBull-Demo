@@ -53,6 +53,20 @@ const Short = () => {
 
   const getTokenPrice = async () => {};
 
+  const fetchData = async () => {
+    if (isConnected) {
+      const data = await readContract.shortMap(address);
+      const userBal = await readTokenContract.balanceOf(address);
+      const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
+
+      console.log(data);
+
+      setitemAmount(ethers.utils.formatUnits(data.amount, 0));
+      setitemStartTime(ethers.utils.formatUnits(data.startTime, 0));
+      setitemRiskTol(ethers.utils.formatUnits(data.tolerance, 0));
+    }
+  };
+
   useEffect(() => {
     setInterval(async () => {
       const currenBlock = statProv.blockNumber;
@@ -61,19 +75,6 @@ const Short = () => {
       console.log(timestamp);
     }, 5000);
 
-    const fetchData = async () => {
-      if (isConnected) {
-        const data = await readContract.shortMap(address);
-        const userBal = await readTokenContract.balanceOf(address);
-        const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
-
-        console.log(data);
-
-        setitemAmount(ethers.utils.formatUnits(data.amount, 0));
-        setitemStartTime(ethers.utils.formatUnits(data.startTime, 0));
-        setitemRiskTol(ethers.utils.formatUnits(data.tolerance, 0));
-      }
-    };
     fetchData();
   }, []);
 
@@ -86,6 +87,7 @@ const Short = () => {
       const cancel = await writeContract.closeShort();
       await cancel.wait();
       alert("Success");
+      fetchData();
     } catch (error) {
       console.log(error);
     }
@@ -105,6 +107,7 @@ const Short = () => {
 
       await openShort.wait();
       alert("success");
+      fetchData();
     } catch (error) {
       console.log(error);
     }
@@ -270,7 +273,7 @@ const Short = () => {
         </div>
 
         <h2 className="text-[36px] md:text-[70px] w-[370px] sm:w-[570px] md:w-[95%] lg:w-[90%] text-start font-bold">
-          Open Orders
+          Open Order
         </h2>
 
         {/* Desktop */}
@@ -321,6 +324,7 @@ const Short = () => {
                 startTime={itemStartTime}
                 riskTol={itemRiskTol}
                 block={currentBlock}
+                ticker={Tokens[id].ticker}
                 close={closeShort}
               />
             </tbody>

@@ -1,2 +1,4 @@
-- make table on main look shorter in with
-- fix main table header on smaller res
+connect from header
+lend page = min 2, starts with nothing
+
+leverage trade go footer

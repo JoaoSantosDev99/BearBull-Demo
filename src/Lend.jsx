@@ -140,6 +140,18 @@ const Lend = () => {
     }
   };
 
+  const formatTime = (time) => {
+    const total = Number(time);
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = Math.floor((total % 3600) % 60);
+
+    const hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+    const mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+    const sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay;
+  };
+
   return (
     <section className="w-full flex justify-center">
       <div className="text-white max-w-screen-2xl flex flex-col w-full justify-center items-center">
@@ -280,7 +292,7 @@ const Lend = () => {
         </div>
 
         <h2 className="text-[36px] md:text-[70px] w-[370px] sm:w-[570px] md:w-[95%] lg:w-[90%] text-start font-bold">
-          Open Orders
+          Open Order
         </h2>
 
         {/* Desktop */}
@@ -320,6 +332,7 @@ const Lend = () => {
                 block={currentBlock}
                 index={1}
                 close={closeLend}
+                ticker={Tokens[id].ticker}
               />
             </tbody>
           </table>

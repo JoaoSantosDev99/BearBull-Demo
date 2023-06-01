@@ -12,6 +12,8 @@ import wallet from "../../assets/icons/wallet2.png";
 import haburger from "../../assets/icons/mobile.png";
 import close from "../../assets/icons/close.png";
 import money from "../../assets/icons/money.png";
+import home from "../../assets/icons/home.png";
+import pancake from "../../assets/icons/pancake.png";
 
 import tg from "../../assets/icons/tg.svg";
 import tw from "../../assets/icons/twtt.svg";
@@ -29,9 +31,12 @@ const Header = () => {
   };
 
   const connectWallet = () => {
-    if (chain?.id !== 719) {
-      switchNetwork?.(719);
+    if (isConnected) return;
+
+    if (chain?.id !== 56) {
+      switchNetwork?.(56);
     }
+
     try {
       open();
     } catch (error) {
@@ -41,77 +46,58 @@ const Header = () => {
 
   return (
     <header className="w-full absolute top-0 flex justify-center">
-      <div className="flex max-w-screen-2xl px-3 py-5 xl:py-14 w-full justify-between items-center">
+      <div className="flex max-w-screen-2xl px-3 py-4 w-full justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-[20px]">
           <h1>
             <img
               src={logo}
               alt="log"
-              className="xl:h-[142px] h-[72px] w-[72px] xl:w-[142px]"
+              className=" h-[60px] w-[60px] lg:w-[90px] lg:h-[90px]"
             />
           </h1>
-          <span className="text-white font-bold text-[20px] xl:text-[32px] leading-[80%] ">
+          <span className="text-white font-bold text-[20px] lg:text-[32px] leading-[80%] ">
             BearBull
             <br /> DEX
           </span>
         </div>
 
         {/* Text links */}
-        <div className="hidden xl:flex gap-10">
-          {/* text */}
-          <ul className="flex gap-10">
-            {/* 1 */}
-            <li className="flex font-bold text-white items-center gap-2 text-[24px] leading-[80%]">
-              <img
-                src={drop}
-                alt=""
-              />
-              <span>
-                BearBull <br />
-                Protocols
-              </span>
-            </li>
-            {/* 2 */}
-            <li className="flex font-bold text-white items-center gap-2 text-[24px] leading-[80%]">
-              <img
-                src={drop}
-                alt=""
-              />
-
-              <span>
-                BearBull <br />
-                Token
-              </span>
-            </li>
-            {/* wallet */}
-            <li className="flex font-bold text-white items-center gap-2 text-[24px] leading-[80%]">
-              <img
-                src={wallet}
-                alt=""
-              />
-              <span>
-                Connect <br />
-                Wallet
-              </span>
-            </li>
-          </ul>
-
+        <div className="hidden lg:flex gap-2">
           {/* Price */}
-          <div>
-            <button className="h-[61px] w-[162px] bg-white font-bold text-[24px]">
+          <div className="flex">
+            <button className="h-[50px] mr-1 flex justify-center items-center text-white w-[70px] border-white border-[3px] font-semibold text-[20px]">
+              <img
+                src={home}
+                alt=""
+                className="w-8 h-8"
+              />
+            </button>
+            <button className="h-[50px] w-[162px] bg-white font-bold text-[20px]">
               Buy BBT
             </button>
-            <button className="text-white h-[61px] w-[162px] border-white border-[3px] font-semibold text-[24px]">
-              $0.2271
+            <button className="h-[50px] bg-black flex justify-center items-center text-white  w-[90px] border-white border-[3px] font-semibold text-[20px]">
+              <img
+                src={pancake}
+                alt=""
+                className="w-8 h-8"
+              />
             </button>
           </div>
+
+          {/* Connect */}
+          <button
+            onClick={connectWallet}
+            className="flex gap-4 justify-center items-center bg-white w-[180px] md:w-[200px] font-bold text-[20px] h-[50px]"
+          >
+            {isConnected ? addressShortener(address) : "Connect Wallet"}
+          </button>
         </div>
 
         {/* Hamburger */}
         <button
           onClick={() => setNav(true)}
-          className="xl:hidden mb-4"
+          className="lg:hidden mb-4"
         >
           <img
             src={haburger}
@@ -159,59 +145,42 @@ const Header = () => {
                 </div>
               </div>
 
-              {/* Price */}
-              <div className="relative mt-8 mb-20">
+              {/* Connect */}
+              <button
+                onClick={connectWallet}
+                className="flex gap-4 text-black mt-10 justify-center items-center bg-white w-[180px] md:w-[200px] font-bold text-[20px] h-[50px]"
+              >
+                {isConnected ? addressShortener(address) : "Connect Wallet"}
+              </button>
+
+              <button className="h-[50px] gap-4 mt-5 mr-1 flex justify-center items-center text-white px-3 border-white border-[3px] font-semibold text-[20px]">
                 <img
-                  src={money}
+                  src={home}
                   alt=""
-                  className="absolute -top-6 -right-6"
-                />
-                <button className="text-black h-[61px] w-[150px] bg-white font-bold text-[24px]">
+                  className="w-8 h-8"
+                />{" "}
+                Home page
+              </button>
+
+              <ul className="flex flex-col mt-7 font-bold text-xl gap-4 items-center">
+                <li>About</li>
+                <li>Whitepaper</li>
+                <li>GitHub</li>
+                <li>Socials</li>
+              </ul>
+
+              {/* Price */}
+              <div className="flex mt-16">
+                <button className="h-[50px] text-black w-[162px] bg-white font-bold text-[20px]">
                   Buy BBT
                 </button>
-                <button className="text-white h-[61px] w-[150px] border-white border-[3px] font-semibold text-[24px]">
-                  $0.2271
+                <button className="h-[50px] bg-black flex justify-center items-center text-white  w-[90px] border-white border-[3px] font-semibold text-[20px]">
+                  <img
+                    src={pancake}
+                    alt=""
+                    className="w-8 h-8"
+                  />
                 </button>
-              </div>
-
-              {/* List */}
-              <div className="flex flex-col h-full items-center gap-10 w-full">
-                <ul className="flex flex-col gap-10">
-                  {/* 1 */}
-                  <li className="flex font-medium text-white items-center gap-5 text-[24px] leading-[80%]">
-                    <img
-                      src={drop}
-                      alt=""
-                    />
-                    <span>
-                      BearBull <br />
-                      Protocols
-                    </span>
-                  </li>
-                  {/* 2 */}
-                  <li className="flex font-medium text-white items-center gap-5 text-[24px] leading-[80%]">
-                    <img
-                      src={drop}
-                      alt=""
-                    />
-
-                    <span>
-                      BearBull <br />
-                      Token
-                    </span>
-                  </li>
-                  {/* wallet */}
-                  <li className="flex font-medium text-white items-center gap-5 text-[24px] leading-[80%]">
-                    <img
-                      src={wallet}
-                      alt=""
-                    />
-                    <span>
-                      Connect <br />
-                      Wallet
-                    </span>
-                  </li>
-                </ul>
               </div>
 
               {/* Social Media */}

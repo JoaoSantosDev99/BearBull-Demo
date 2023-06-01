@@ -1,7 +1,28 @@
 import { useParams } from "react-router-dom";
 
-const LendTableItem = ({ index, name, amount, endTime, close, block }) => {
+const LendTableItem = ({
+  index,
+  name,
+  amount,
+  endTime,
+  close,
+  block,
+  ticker,
+}) => {
   // window.scrollTo({ top: 0 });
+  const { id } = useParams();
+
+  const formatTime = (time) => {
+    const total = Number(time);
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = Math.floor((total % 3600) % 60);
+
+    const hDisplay = h > 0 ? h + (h === 1 ? " h, " : " h, ") : "";
+    const mDisplay = m > 0 ? m + (m === 1 ? " min, " : " min, ") : "";
+    const sDisplay = s > 0 ? s + (s === 1 ? " s" : " s") : "";
+    return hDisplay + mDisplay + sDisplay;
+  };
 
   return (
     <tr
@@ -17,13 +38,15 @@ const LendTableItem = ({ index, name, amount, endTime, close, block }) => {
       >
         {name}
       </th>
-      <td className="px-6 py-4 text-end">{amount === "0" ? "_" : amount}</td>
+      <td className="px-6 py-4 text-end">
+        {amount === "0" ? "_" : amount} ${ticker}
+      </td>
       <td className="px-6 py-4 text-end">
         {endTime === "0"
           ? "_"
           : block === 1337
           ? "Loading"
-          : endTime - block + "s"}
+          : formatTime(endTime - block)}
       </td>
 
       {/* buttons */}
