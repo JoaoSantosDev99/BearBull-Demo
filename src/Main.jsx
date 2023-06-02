@@ -1,5 +1,4 @@
 import TableItem from "./components/UI/TableItem";
-import drop from "./assets/icons/drop.png";
 import TableItemMob from "./components/UI/TableItemMob";
 import PreFooter from "./components/PreFooter";
 import Hero from "./Hero";
