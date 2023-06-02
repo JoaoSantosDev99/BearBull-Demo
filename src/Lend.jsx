@@ -80,12 +80,12 @@ const Lend = () => {
   };
 
   useEffect(() => {
-    // setInterval(async () => {
-    //   const currenBlock = statProv.blockNumber;
-    //   const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
-    //   setCurrentBlock(timestamp);
-    //   console.log(timestamp);
-    // }, 5000);
+    setInterval(async () => {
+      const currenBlock = statProv.blockNumber;
+      const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
+      setCurrentBlock(timestamp);
+      console.log(timestamp);
+    }, 5000);
 
     fetchData();
   }, []);
@@ -175,7 +175,7 @@ const Lend = () => {
         <div className="bg-center bg-cover bg-no-repeat bg-[url('./assets/lend.jpg')] flex flex-col items-center w-full">
           <h2 className="mt-96 leading-[52px] md:leading-normal mb-10 md:mb-10 text-[50px] md:text-[70px] w-[370px] sm:w-[570px] md:w-[90%] text-start font-bold">
             <span className="text-[#28FDD7]">
-              Land:
+              Lend:
               <br className="md:hidden" />{" "}
             </span>
             {Tokens[id].name}
@@ -285,7 +285,7 @@ const Lend = () => {
                   ≈ {statWorthBbn} BNB {console.log(statWorthBbn)}
                 </span>
                 <span className="text-[16px] lg:text-[24px] font-normal">
-                  In Orders
+                  Lendings
                 </span>
               </div>
             </div>
