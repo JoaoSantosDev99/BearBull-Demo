@@ -271,7 +271,6 @@ const Short = () => {
             </button>
           </div>
         </div>
-
         <h2 className="text-[36px] md:text-[70px] w-[370px] sm:w-[570px] md:w-[95%] lg:w-[90%] text-start font-bold">
           Open Order
         </h2>
@@ -330,7 +329,6 @@ const Short = () => {
             </tbody>
           </table>
         </div>
-
         {/* Mobile */}
         <div className="md:hidden">
           <table className="w-full flex flex-col items-center text-sm text-left">
@@ -400,7 +398,6 @@ const Short = () => {
             </tbody>
           </table>
         </div>
-
         <div className="justify-between w-[380px] sm:w-[560px] md:w-[95%] lg:w-[90%] p-5 flex mb-20 bg-black">
           <Link to="/">
             <button className="flex font-bold text-[16px] items-center gap-2">

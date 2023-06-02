@@ -10,6 +10,59 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/appContext";
 import { fiveDecimals } from "../../../utils";
 
+// export const TableItem1 = ({ index, name, ticker, address }) => {
+//   const [inOrd, setInOrd] = useState(0);
+//   const [pool, setPool] = useState(0);
+//   const [tsupply, settsupply] = useState(0);
+
+//   const { contAdd } = useContext(AppContext);
+//   const statProv = new ethers.providers.JsonRpcProvider(
+//     "https://rpc.ankr.com/bsc"
+//   );
+
+//   const tokenTest = address;
+//   const readTokContract = new ethers.Contract(tokenTest, ercAbi, statProv);
+
+//   const readContract = new ethers.Contract(contAdd, abi, statProv);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       const inOrdFt = await readContract.tokensInShorts();
+//       const poolFt = await readContract.totalLent();
+
+//       setInOrd(ethers.utils.formatUnits(inOrdFt, 0));
+//       setPool(ethers.utils.formatUnits(poolFt, 0));
+
+//       const tsup = await readTokContract.totalSupply();
+//       settsupply(ethers.utils.formatUnits(tsup, 18));
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   return (
+//     <tr
+//       className={
+//         index % 2 === 0
+//           ? "bg-black font-semibold text-white"
+//           : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+//       }
+//     >
+//       <th
+//         scope="row"
+//         className="px-6 py-4"
+//       >
+//         {name}
+//       </th>
+//       <td className="px-6 py-4 text-center">{ticker}</td>
+//       <td className="px-6 py-4 text-center">$xx,xxx</td>
+//       <td className="px-6 py-4 text-end">xx%</td>
+//       <td className="px-6 py-4 text-end">{fiveDecimals(pool / tsupply)}%</td>
+//       <td className="px-6 py-4">{fiveDecimals(inOrd / pool)}%</td>
+
+//   );
+// };
+
 const TableItem = ({ index, name, ticker, address }) => {
   const [inOrd, setInOrd] = useState(0);
   const [pool, setPool] = useState(0);
@@ -41,27 +94,24 @@ const TableItem = ({ index, name, ticker, address }) => {
   }, []);
 
   return (
-    <tr
+    <div
       className={
         index % 2 === 0
-          ? "bg-black font-semibold text-white"
-          : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+          ? "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] hidden lg:flex items-center text-white justify-center py-3 mb-20 max-w-screen-xl px-2"
+          : "hidden lg:flex items-center text-white justify-center py-3 mb-20 max-w-screen-xl px-2"
       }
     >
-      <th
-        scope="row"
-        className="px-6 py-4"
-      >
-        {name}
-      </th>
-      <td className="px-6 py-4 text-center">{ticker}</td>
-      <td className="px-6 py-4 text-center">$xx,xxx</td>
-      <td className="px-6 py-4 text-end">xx%</td>
-      <td className="px-6 py-4 text-end">{fiveDecimals(pool / tsupply)}%</td>
-      <td className="px-6 py-4">{fiveDecimals(inOrd / pool)}%</td>
-
-      {/* buttons */}
-      <td className="px-6 py-4 flex gap-2">
+      <span className="px-2 w-[100px] text-[18px] font-normal">{name}</span>
+      <span className="px-2 w-[100px] text-[18px] font-normal">${ticker}</span>
+      <span className="px-2 w-[150px] text-[18px] font-normal">__,___</span>
+      <span className="px-2 w-[120px] text-[18px] font-normal">__%</span>
+      <span className="px-2 w-[150px] text-[18px] font-normal">
+        {fiveDecimals(pool / tsupply)}%
+      </span>
+      <span className="px-2 w-[150px] text-[18px] font-normal">
+        {fiveDecimals(inOrd / pool)}%
+      </span>
+      <span className="px-2 w-[300px] text-[18px] font-normal flex justify-end gap-2">
         {/* short */}
         <Link to={`/short/${index}`}>
           <button className="w-[125px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]">
@@ -90,8 +140,8 @@ const TableItem = ({ index, name, ticker, address }) => {
             </div>
           </button>
         </Link>
-      </td>
-    </tr>
+      </span>
+    </div>
   );
 };
 

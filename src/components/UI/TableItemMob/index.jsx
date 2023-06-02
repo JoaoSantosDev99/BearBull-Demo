@@ -7,6 +7,7 @@ import { ethers } from "ethers";
 import abi from "../../../contracts/contract.json";
 import ercAbi from "../../../contracts/erc-20.json";
 import { AppContext } from "../../../context/appContext";
+import { fiveDecimals } from "../../../utils";
 
 const TableItemMob = ({ index, name, ticker, address }) => {
   const [showButtons, setShowButtons] = useState(false);
@@ -42,45 +43,35 @@ const TableItemMob = ({ index, name, ticker, address }) => {
   }, []);
 
   return (
-    <>
-      <tr
-        onClick={() => setShowButtons((prevState) => !prevState)}
+    <div className="flex flex-col w-full">
+      <div
         className={
-          index % 2 !== 0
-            ? "bg-black font-semibold text-white"
-            : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+          index % 2 === 0
+            ? "w-full py-3 flex bg-gradient-to-r from-[#191919] via-[#181818] to-[#000]"
+            : "w-full py-3 flex"
         }
+        onClick={() => setShowButtons((prevState) => !prevState)}
       >
-        <th
-          scope="row"
-          className="px-4 py-4 text-left min-w-[130px] sm:min-w-[140px] md:min-w-[170px]"
-        >
-          <div className="flex flex-col">
-            <span>{name}</span>
-            <span>{ticker}</span>
-          </div>
-        </th>
+        <div className="flex w-full flex-col">
+          <span className="px-2 text-[16px] font-bold">{name}</span>
+          <span className="px-2 text-[16px] opacity-30 uppercase font-bold">
+            {ticker}
+          </span>
+        </div>
+        <div className="flex w-full flex-col">
+          <span className="px-2 text-[16px] font-bold">__,___</span>
+          <span className="px-2 text-[16px] font-bold">+__%</span>
+        </div>
+        <div className="flex w-full flex-col text-end">
+          <span className="px-2 text-[16px] font-bold">
+            {fiveDecimals(pool / tsupply)}%
+          </span>
+          <span className="px-2 text-[16px] font-bold">
+            {fiveDecimals(inOrd / pool)}%
+          </span>
+        </div>
+      </div>
 
-        <th
-          scope="row"
-          className="px-4 py-4 min-w-[130px] sm:min-w-[140px] md:min-w-[170px]"
-        >
-          <div className="flex flex-col items-end">
-            <span>$xx,xxx</span>
-            <span>-xx%</span>
-          </div>
-        </th>
-
-        <th
-          scope="row"
-          className="px-4 py-4 min-w-[130px] sm:min-w-[140px] md:min-w-[170px]"
-        >
-          <div className="flex flex-col items-end">
-            <span>{pool / tsupply}%</span>
-            <span>{pool / inOrd}%</span>
-          </div>
-        </th>
-      </tr>
       {showButtons && (
         <div
           className={
@@ -120,7 +111,7 @@ const TableItemMob = ({ index, name, ticker, address }) => {
           </Link>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

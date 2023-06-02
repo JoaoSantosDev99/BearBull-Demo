@@ -10,153 +10,74 @@ const Main = () => {
   return (
     <section className="w-full flex flex-col items-center justify-center">
       <Hero />
-      <div className="max-w-screen-2xl w-full">
-        <div class="relative -mt-14 overflow-x-auto">
-          {/* Desktop */}
-          <div className="hidden lg:flex">
-            <table className="w-full text-sm text-left">
-              <thead className="text-white font-normal">
-                <tr className="text-[18px] border-b-[2px] xl:text-[19px]">
-                  <th
-                    scope="col"
-                    class="px-2 xl:px-6 flex justify-center items-center gap-2 py-3 "
-                  >
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={drop}
-                        alt=""
-                      />
-                      <span>Name</span>
-                    </div>
-                  </th>
+      <div className="max-w-screen-2xl w-full flex flex-col items-center justify-center">
+        {/* Header Table */}
+        <div className="hidden lg:flex text-white justify-center py-3 mb-2 border-b border-white max-w-[100%] px-2">
+          <span className="px-2 w-[100px] text-[18px] font-bold">Name</span>
+          <span className="px-2 w-[100px] text-[18px] font-bold">Ticker</span>
+          <span className="px-2 w-[150px] text-[18px] font-bold">
+            Market Cap
+          </span>
+          <span className="px-2 w-[120px] text-[18px] font-bold">24h</span>
+          <span className="px-2 w-[150px] text-[18px] font-bold">
+            Pool Supply
+          </span>
+          <span className="px-2 w-[150px] text-[18px] font-bold">
+            In Orders
+          </span>
+          <span className="px-2 w-[300px] text-[18px] font-bold"></span>
+        </div>
 
-                  <th
-                    scope="col"
-                    class="px-2 xl:px-6 text-center py-3"
-                  >
-                    Ticker
-                  </th>
+        {/* Table Iteam */}
+        <div className="hidden lg:flex">
+          {TokenList.map((item, index) => (
+            <TableItem
+              index={index}
+              address={item.address}
+              name={item.name}
+              ticker={item.ticker}
+              key={index}
+            />
+          ))}
+        </div>
 
-                  <th
-                    scope="col"
-                    class="px-2 xl:px-6 text-center py-3"
-                  >
-                    Market Cap
-                  </th>
+        {/* Mobile -------------- */}
 
-                  <th
-                    scope="col"
-                    className="px-2 xl:px-6 text-center py-3"
-                  >
-                    24h Change, %
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-2 xl:px-6 py-3 text-center"
-                  >
-                    Pool Supply, %
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-2 xl:px-6 text-center py-3"
-                  >
-                    In Orders, %
-                  </th>
-
-                  {/* empty */}
-                  <th
-                    scope="col"
-                    className="hidden lg:flex px-2 xl:px-6 py-3"
-                  ></th>
-                </tr>
-              </thead>
-
-              {/* Body */}
-              <tbody>
-                {TokenList.map((item, index) => (
-                  <TableItem
-                    index={index}
-                    address={item.address}
-                    name={item.name}
-                    ticker={item.ticker}
-                    key={index}
-                  />
-                ))}
-              </tbody>
-            </table>
+        {/* Mobile Header */}
+        <div className="lg:hidden flex text-white justify-center py-3 mb-2 max-w-xl w-full px-1">
+          <div className="flex w-full flex-col">
+            <span className="px-2 py-2 border-b text-[16px] font-bold">
+              Name
+            </span>
+            <span className="px-2 py-2 text-[16px] font-bold">Ticker</span>
           </div>
-
-          {/* Mobile */}
-          <div className="lg:hidden w-full flex justify-center">
-            <table className="w-full flex flex-col items-center">
-              <thead className="text-white min-w-[390px] sm:min-w-[420px] md:min-w-[510px] font-normal">
-                <tr className="text-[18px] flex justify-evenly xl:text-[19px]">
-                  <th
-                    scope="col"
-                    class="w-full xl:px-6 text-center py-3"
-                  >
-                    <div className="flex flex-col items-start">
-                      <span className="text-start border-b w-full">
-                        <div className="flex w-full text-start items-center gap-2">
-                          <img
-                            src={drop}
-                            alt=""
-                          />
-                          <span>Name</span>
-                        </div>
-                        <br />
-                      </span>
-                      <span className="text-start">
-                        Ticker <br /> {""}
-                      </span>
-                    </div>
-                  </th>
-
-                  <th
-                    scope="col"
-                    class="w-full xl:px-6 text-center py-3"
-                  >
-                    <div className="flex flex-col items-start">
-                      <span className="text-start border-b w-full">
-                        Market <br /> Cap
-                      </span>
-                      <span className="text-start">
-                        24h <br /> Charge, %
-                      </span>
-                    </div>
-                  </th>
-
-                  <th
-                    scope="col"
-                    class="w-full xl:px-6 text-center py-3"
-                  >
-                    <div className="flex flex-col items-start">
-                      <span className="text-start border-b w-full">
-                        Pool <br /> Supply, %
-                      </span>
-                      <span className="text-start">
-                        In Orders, <br /> %
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-
-              {/* Body */}
-              <tbody>
-                {TokenList.map((i, index) => (
-                  <TableItemMob
-                    address={i.address}
-                    name={i.name}
-                    ticker={i.ticker}
-                    key={index}
-                    index={1}
-                  />
-                ))}
-              </tbody>
-            </table>
+          <div className="flex w-full flex-col">
+            <span className="px-2 py-2 border-b text-[16px] font-bold">
+              Market cap
+            </span>
+            <span className="px-2 py-2 text-[16px] font-bold">24h</span>
+          </div>
+          <div className="flex w-full flex-col text-end ">
+            <span className="px-2 py-2 border-b text-[16px] font-bold">
+              Pool Supply
+            </span>
+            <span className="px-2 py-2 text-[16px] font-bold">In Orders</span>
           </div>
         </div>
+
+        {/* Mobile Item */}
+        <div className="lg:hidden px-[4px] flex text-white justify-center mb-20 max-w-xl w-full">
+          {TokenList.map((item, index) => (
+            <TableItemMob
+              index={index}
+              address={item.address}
+              name={item.name}
+              ticker={item.ticker}
+              key={index}
+            />
+          ))}
+        </div>
+
         <PreFooter />
       </div>
     </section>
