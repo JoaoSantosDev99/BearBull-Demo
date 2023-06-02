@@ -1,15 +1,10 @@
 import { Link, useParams } from "react-router-dom";
-import LendTableItem from "./components/UI/LendTabItem";
-import LendTableItemMob from "./components/UI/LendTabItemMob";
 import drop from "./assets/icons/drop.png";
 import cancel from "./assets/icons/closeAll.png";
 import down from "./assets/icons/down.png";
-import lock from "./assets/icons/lock.png";
-import pchart from "./assets/icons/redpiech.png";
 import ShortTableItem from "./components/UI/ShortTabItem";
 import ShortTableItemMob from "./components/UI/ShortTabItemMob";
 
-import { Chart } from "react-google-charts";
 import { PieChart } from "react-minimal-pie-chart";
 import Tokens from "./constants/Tokens.json";
 import { useContext, useEffect, useState } from "react";
