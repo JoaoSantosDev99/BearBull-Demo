@@ -10,16 +10,14 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/appContext";
 import { fiveDecimals } from "../../../utils";
 
-const TableItem = ({ index, name, ticker, address }) => {
+const TableItem = ({ index, name, ticker, address, contractAdd }) => {
   const [inOrd, setInOrd] = useState(0);
   const [pool, setPool] = useState(0);
   const [tsupply, settsupply] = useState(0);
 
-  const { contAdd } = useContext(AppContext);
-  const statProv = new ethers.providers.JsonRpcProvider(
-    "https://rpc.ankr.com/bsc"
-  );
+  const { statProv } = useContext(AppContext);
 
+  const contAdd = contractAdd;
   const tokenTest = address;
   const readTokContract = new ethers.Contract(tokenTest, ercAbi, statProv);
 

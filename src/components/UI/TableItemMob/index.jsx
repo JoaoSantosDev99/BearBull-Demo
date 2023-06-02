@@ -9,19 +9,16 @@ import ercAbi from "../../../contracts/erc-20.json";
 import { AppContext } from "../../../context/appContext";
 import { fiveDecimals } from "../../../utils";
 
-const TableItemMob = ({ index, name, ticker, address }) => {
+const TableItemMob = ({ index, name, ticker, contractAdd, address }) => {
   const [showButtons, setShowButtons] = useState(false);
 
   const [inOrd, setInOrd] = useState(0);
   const [pool, setPool] = useState(0);
   const [tsupply, settsupply] = useState(0);
 
-  const { contAdd } = useContext(AppContext);
+  const { statProv } = useContext(AppContext);
 
-  const statProv = new ethers.providers.JsonRpcProvider(
-    "https://rpc.ankr.com/bsc"
-  );
-
+  const contAdd = contractAdd;
   const tokenTest = address;
   const readTokContract = new ethers.Contract(tokenTest, ercAbi, statProv);
 

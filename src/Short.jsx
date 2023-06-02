@@ -17,8 +17,9 @@ import { useAccount, useSigner } from "wagmi";
 import { fiveDecimals, twoDecimals } from "./utils";
 
 const Short = () => {
-  // window.scrollTo({ top: 0 });
-  const { contAdd } = useContext(AppContext);
+  const { id } = useParams();
+  const contAdd = Tokens[id].contract;
+  const { statProv } = useContext(AppContext);
 
   const [statInOrd, setstatInOrd] = useState(0);
   const [statTSupp, setTSupp] = useState(0);
@@ -38,13 +39,8 @@ const Short = () => {
 
   const [currentBlock, setCurrentBlock] = useState(1337);
 
-  const { id } = useParams();
   const { data: signer } = useSigner();
   const { address, isConnected } = useAccount();
-
-  const statProv = new ethers.providers.JsonRpcProvider(
-    "https://rpc.ankr.com/bsc"
-  );
 
   const shortToken = Tokens[id].address;
   // ercAbi
@@ -80,12 +76,12 @@ const Short = () => {
   };
 
   useEffect(() => {
-    // setInterval(async () => {
-    //   const currenBlock = statProv.blockNumber;
-    //   const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
-    //   setCurrentBlock(timestamp);
-    //   console.log(timestamp);
-    // }, 5000);
+    setInterval(async () => {
+      const currenBlock = statProv.blockNumber;
+      const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
+      setCurrentBlock(timestamp);
+      console.log(timestamp);
+    }, 5000);
 
     fetchData();
   }, []);

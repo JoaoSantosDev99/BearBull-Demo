@@ -87,13 +87,26 @@ const Footer = () => {
               About
             </h3>
             <ul className="flex flex-col text-[#FFFFFF8F]">
-              <li className="text-[12px] md:text-[18px] font-normal">
-                Whitepaper
-              </li>
+              <a
+                href="https://bearbull-dex.gitbook.io/whitepaper"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <li className="text-[12px] md:text-[18px] font-normal">
+                  Whitepaper
+                </li>
+              </a>
               <li className="text-[12px] md:text-[18px] font-normal">GitHub</li>
-              <li className="text-[12px] md:text-[18px] font-normal">
-                Socials
-              </li>
+
+              <a
+                href="https://linktr.ee/bearbulldex"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <li className="text-[12px] md:text-[18px] font-normal">
+                  Socials
+                </li>
+              </a>
             </ul>
           </div>
         </div>

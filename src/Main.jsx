@@ -33,6 +33,7 @@ const Main = () => {
             <TableItem
               index={index}
               address={item.address}
+              contractAdd={item.contract}
               name={item.name}
               ticker={item.ticker}
               key={index}
@@ -70,6 +71,7 @@ const Main = () => {
             <TableItemMob
               index={index}
               address={item.address}
+              contractAdd={item.contract}
               name={item.name}
               ticker={item.ticker}
               key={index}

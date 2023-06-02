@@ -16,9 +16,10 @@ import { fiveDecimals, formatCommas, twoDecimals } from "./utils";
 
 const Lend = () => {
   const { id } = useParams();
-  // window.scrollTo({ top: 0 });
+  const contAdd = Tokens[id].contract;
 
-  const { contAdd } = useContext(AppContext);
+  const { statProv } = useContext(AppContext);
+
   const [currentBlock, setCurrentBlock] = useState(1337);
   const [dateVal, setdateVal] = useState("");
   const [userBal, setUserbal] = useState(0);
@@ -36,10 +37,6 @@ const Lend = () => {
 
   const { data: signer } = useSigner();
   const { address, isConnected } = useAccount();
-
-  const statProv = new ethers.providers.JsonRpcProvider(
-    "https://rpc.ankr.com/bsc"
-  );
 
   const tokenAdd = "0x4F0F2fA439C6454B4664f3C4432514Ec07c1bC28";
 
@@ -80,12 +77,12 @@ const Lend = () => {
   };
 
   useEffect(() => {
-    // setInterval(async () => {
-    //   const currenBlock = statProv.blockNumber;
-    //   const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
-    //   setCurrentBlock(timestamp);
-    //   console.log(timestamp);
-    // }, 5000);
+    setInterval(async () => {
+      const currenBlock = statProv.blockNumber;
+      const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
+      setCurrentBlock(timestamp);
+      console.log(timestamp);
+    }, 5000);
 
     fetchData();
   }, []);

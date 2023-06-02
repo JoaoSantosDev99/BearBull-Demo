@@ -1,17 +1,11 @@
 import { useWeb3Modal } from "@web3modal/react";
-import { Link, NavLink } from "react-router-dom";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 import { addressShortener } from "../../utils";
-import { useEffect } from "react";
 import { useState } from "react";
-import { ethers } from "ethers";
 
 import logo from "../../assets/Logos/footerLogo.svg";
-import drop from "../../assets/icons/drop.png";
-import wallet from "../../assets/icons/wallet2.png";
 import haburger from "../../assets/icons/mobile.png";
 import close from "../../assets/icons/close.png";
-import money from "../../assets/icons/money.png";
 import home from "../../assets/icons/home.png";
 import pancake from "../../assets/icons/pancake.png";
 
@@ -182,9 +176,23 @@ const Header = () => {
 
               <ul className="flex flex-col mt-7 font-bold text-xl gap-4 items-center">
                 <li>About</li>
-                <li>Whitepaper</li>
+                <a
+                  href="https://bearbull-dex.gitbook.io/whitepaper"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <li>Whitepaper</li>
+                </a>
+
                 <li>GitHub</li>
-                <li>Socials</li>
+
+                <a
+                  href="https://linktr.ee/bearbulldex"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <li>Socials</li>
+                </a>
               </ul>
 
               {/* Price */}
