@@ -12,7 +12,7 @@ import { ethers } from "ethers";
 
 import abi from "./contracts/contract.json";
 import ercAbi from "./contracts/erc-20.json";
-import { fiveDecimals, twoDecimals } from "./utils";
+import { fiveDecimals, formatCommas, twoDecimals } from "./utils";
 
 const Lend = () => {
   const { id } = useParams();
@@ -20,12 +20,16 @@ const Lend = () => {
 
   const { contAdd } = useContext(AppContext);
   const [currentBlock, setCurrentBlock] = useState(1337);
-  const [dateVal, setdateVal] = useState(0);
+  const [dateVal, setdateVal] = useState("");
   const [userBal, setUserbal] = useState(0);
   const [bnbVal, setbnbVal] = useState(0);
 
   const [orderAmount, setorderAmount] = useState(0);
   const [orderEndTime, setorderEndTime] = useState(0);
+
+  const [statTSup, setstatTSup] = useState(0);
+  const [statTotalLent, setstatTotalLent] = useState(0);
+  const [statWorthBbn, setstatWorthBbn] = useState(0);
 
   const [inputAmount, setinputAmount] = useState();
   const [percVal, setpercVal] = useState(0);
@@ -43,6 +47,19 @@ const Lend = () => {
   const readTokenContract = new ethers.Contract(tokenAdd, ercAbi, statProv);
 
   const fetchData = async () => {
+    const ftsup = await readTokenContract.totalSupply();
+    const tsupFormated = ethers.utils.formatUnits(ftsup);
+    setstatTSup(tsupFormated);
+
+    const totalLent = await readContract.totalLent();
+    setstatTotalLent(ethers.utils.formatUnits(totalLent, 0));
+
+    const fworth = await readContract.getCollateral(
+      ethers.utils.formatUnits(totalLent, 0),
+      100
+    );
+    setstatWorthBbn(fiveDecimals(ethers.utils.formatUnits(fworth, 18)));
+
     if (isConnected) {
       const userBal = await readTokenContract.balanceOf(address);
       const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
@@ -57,16 +74,18 @@ const Lend = () => {
       setorderEndTime(ordEndtime);
 
       setUserbal(formated);
+
+      console.log(formated);
     }
   };
 
   useEffect(() => {
-    setInterval(async () => {
-      const currenBlock = statProv.blockNumber;
-      const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
-      setCurrentBlock(timestamp);
-      console.log(timestamp);
-    }, 5000);
+    // setInterval(async () => {
+    //   const currenBlock = statProv.blockNumber;
+    //   const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
+    //   setCurrentBlock(timestamp);
+    //   console.log(timestamp);
+    // }, 5000);
 
     fetchData();
   }, []);
@@ -211,26 +230,28 @@ const Lend = () => {
           <div className="flex flex-wrap mb-5 md:mb-16 justify-between items-center w-[370px] sm:w-[570px] md:w-[90%]">
             <div className="flex w-[170px] md:w-auto flex-col">
               <h2 className="text-[40px] lg:text-[60px] leading-[60px] font-light">
-                68,231
-              </h2>
-              <span className="text-[16px] lg:text-[24px] font-normal">
-                Available Balance
-              </span>
-            </div>
-            <div className="flex w-[170px] md:w-auto flex-col">
-              <h2 className="text-[40px] lg:text-[60px] leading-[60px] font-light">
-                0
-              </h2>
-              <span className="text-[16px] lg:text-[24px] font-normal">
-                Pooled Balance
-              </span>
-            </div>
-            <div className="flex w-[170px] md:w-auto flex-col">
-              <h2 className="text-[40px] lg:text-[60px] leading-[60px] font-light">
-                200M
+                {formatCommas(statTSup)}
               </h2>
               <span className="text-[16px] lg:text-[24px] font-normal">
                 Total Supply
+              </span>
+            </div>
+
+            <div className="flex w-[170px] md:w-auto flex-col">
+              <h2 className="text-[40px] lg:text-[60px] leading-[60px] font-light">
+                {statTotalLent}
+              </h2>
+              <span className="text-[16px] lg:text-[24px] font-normal">
+                Total Lent
+              </span>
+            </div>
+
+            <div className="flex w-[170px] md:w-auto flex-col">
+              <h2 className="text-[40px] lg:text-[60px] leading-[60px] font-light">
+                {userBal}
+              </h2>
+              <span className="text-[16px] lg:text-[24px] font-normal">
+                Your Balance
               </span>
             </div>
 
@@ -240,18 +261,28 @@ const Lend = () => {
                 <PieChart
                   style={{ width: "100px", height: "100px" }}
                   data={[
-                    { title: "One", value: 10, color: "#ffffff17" },
-                    { title: "Two", value: 15, color: "#28FDD7" },
+                    {
+                      title: "Total Suuply",
+                      value: statTSup - statTotalLent,
+                      color: "#ffffff17",
+                    },
+                    {
+                      title: "Tokens Lent",
+                      value: Number(statTotalLent),
+                      color: "#28FDD7",
+                    },
                   ]}
                 />
+                {console.log("tl", statTotalLent)}
+                {console.log("tl 2", statTSup - statTotalLent)}
               </div>
 
               <div className="flex mt-1 justify-center flex-col">
                 <span className="text-[24px] lg:text-[40px] lg:leading-[35px] font-normal">
-                  4,323M
+                  {formatCommas(statTotalLent)}
                 </span>
                 <span className="text-[14px] lg:text-[20px] opacity-30 font-normal">
-                  ≈ 0.027 BNB{" "}
+                  ≈ {statWorthBbn} BNB {console.log(statWorthBbn)}
                 </span>
                 <span className="text-[16px] lg:text-[24px] font-normal">
                   In Orders
@@ -277,11 +308,11 @@ const Lend = () => {
               className="w-[137px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]"
             >
               <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
-                <div className="w-full h-full text-[#28FDD7] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
+                <div className="w-full h-full active:text-black active:bg-[#1aa38a] text-[#1f9f87] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
                   <img
                     src={up}
                     alt=""
-                  />{" "}
+                  />
                   Lend
                 </div>
               </div>
@@ -294,7 +325,7 @@ const Lend = () => {
         </h2>
 
         {/* Desktop */}
-        <div className="hidden md:w-[95%] lg:w-[90%] md:flex">
+        <div className="hidden mb-20 md:w-[95%] lg:w-[90%] md:flex">
           <table className="w-full text-sm text-left">
             <thead className="text-white font-normal relative">
               <tr className="text-[18px] border-b-[2px] xl:text-[19px]">
@@ -391,18 +422,16 @@ const Lend = () => {
           </table>
         </div>
 
-        <div className="justify-between w-[380px] sm:w-[560px] md:w-[95%] lg:w-[90%] p-5 flex mb-20 bg-black">
-          <Link to="/">
-            <button className="flex font-bold text-[16px] items-center gap-2">
-              <img
-                src={drop}
-                alt=""
-                className="rotate-90"
-              />{" "}
-              Back
-            </button>
-          </Link>
-        </div>
+        <Link to="/">
+          <button className="fixed bg-black border-[3px] p-5 rounded-lg bottom-5 right-5 flex font-bold text-[16px] items-center gap-2">
+            <img
+              src={drop}
+              alt=""
+              className="rotate-90"
+            />{" "}
+            Back
+          </button>
+        </Link>
       </div>
     </section>
   );

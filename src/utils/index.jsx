@@ -13,3 +13,9 @@ export const twoDecimals = (num) => {
 export const fiveDecimals = (num) => {
   return Math.trunc(num * 100000) / 100000;
 };
+
+export const formatCommas = (number) => {
+  return Math.trunc(number)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};

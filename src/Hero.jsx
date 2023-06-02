@@ -1,17 +1,8 @@
 import tg from "./assets/icons/tg.svg";
 import tw from "./assets/icons/twtt.svg";
 import dk from "./assets/icons/dk.svg";
-import wallet from "./assets/icons/wallet.png";
-import { switchNetwork } from "@wagmi/core";
-import { useAccount, useNetwork } from "wagmi";
-import { useWeb3Modal } from "@web3modal/react";
-import { addressShortener } from "./utils";
 
 const Hero = () => {
-  const { chain } = useNetwork();
-  const { open } = useWeb3Modal();
-  const { address, isConnected } = useAccount();
-
   return (
     <section className="bg-center bg-cover bg-no-repeat bg-[url('./assets/main.jpg')] pb-40 md:pb-52 w-full flex justify-center">
       <div className="max-w-screen-2xl w-full px-7 md:px-6">

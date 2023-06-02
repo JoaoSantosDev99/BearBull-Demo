@@ -1,6 +1,5 @@
 import { Link, useParams } from "react-router-dom";
 import drop from "./assets/icons/drop.png";
-import cancel from "./assets/icons/closeAll.png";
 import down from "./assets/icons/down.png";
 import ShortTableItem from "./components/UI/ShortTabItem";
 import ShortTableItemMob from "./components/UI/ShortTabItemMob";
@@ -15,17 +14,23 @@ import ercAbi from "./contracts/erc-20.json";
 
 import { AppContext } from "./context/appContext";
 import { useAccount, useSigner } from "wagmi";
-import { twoDecimals } from "./utils";
+import { fiveDecimals, twoDecimals } from "./utils";
 
 const Short = () => {
   // window.scrollTo({ top: 0 });
   const { contAdd } = useContext(AppContext);
+
+  const [statInOrd, setstatInOrd] = useState(0);
+  const [statTSupp, setTSupp] = useState(0);
+  const [statOrdWorth, setstatOrdWorth] = useState(0);
+  const [statTotalLent, setstatTotalLent] = useState(0);
 
   const [itemStartTime, setitemStartTime] = useState(0);
   const [itemAmount, setitemAmount] = useState(0);
   const [itemRiskTol, setitemRiskTol] = useState(0);
 
   const [userBal, setUserbal] = useState(0);
+  const [collateral, setCollateral] = useState(0);
   const [tokenAmPric, settokenAmPric] = useState();
 
   const [inputAmount, setinputAmount] = useState();
@@ -46,16 +51,28 @@ const Short = () => {
   const readContract = new ethers.Contract(contAdd, abi, statProv);
   const readTokenContract = new ethers.Contract(shortToken, ercAbi, statProv);
 
-  const getTokenPrice = async () => {};
-
   const fetchData = async () => {
+    const ftsup = await readTokenContract.totalSupply();
+    const inOrdFt = await readContract.tokensInShorts();
+    const fworth = await readContract.getCollateral(
+      ethers.utils.formatUnits(inOrdFt, 0),
+      100
+    );
+
+    const poolFt = await readContract.totalLent();
+    setstatTotalLent(ethers.utils.formatUnits(poolFt, 0));
+
+    setstatInOrd(ethers.utils.formatUnits(inOrdFt, 0));
+
+    setstatOrdWorth(fiveDecimals(ethers.utils.formatUnits(fworth, 18)));
+    setTSupp(ethers.utils.formatUnits(ftsup, 18));
+
     if (isConnected) {
       const data = await readContract.shortMap(address);
-      const userBal = await readTokenContract.balanceOf(address);
-      const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
+      const fuserBal = await readTokenContract.balanceOf(address);
+      const formated = twoDecimals(Number(ethers.utils.formatEther(fuserBal)));
 
-      console.log(data);
-
+      setUserbal(formated);
       setitemAmount(ethers.utils.formatUnits(data.amount, 0));
       setitemStartTime(ethers.utils.formatUnits(data.startTime, 0));
       setitemRiskTol(ethers.utils.formatUnits(data.tolerance, 0));
@@ -63,12 +80,12 @@ const Short = () => {
   };
 
   useEffect(() => {
-    setInterval(async () => {
-      const currenBlock = statProv.blockNumber;
-      const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
-      setCurrentBlock(timestamp);
-      console.log(timestamp);
-    }, 5000);
+    // setInterval(async () => {
+    //   const currenBlock = statProv.blockNumber;
+    //   const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
+    //   setCurrentBlock(timestamp);
+    //   console.log(timestamp);
+    // }, 5000);
 
     fetchData();
   }, []);
@@ -109,7 +126,19 @@ const Short = () => {
   };
 
   const handleInputChange = (e) => {
-    setinputAmount(e.target.value);
+    if (e.target.value === "") {
+      setinputAmount(e.target.value);
+      setCollateral(0);
+      console.log("empty");
+    } else {
+      setinputAmount(e.target.value);
+      fetchPrice(e.target.value);
+    }
+  };
+
+  const fetchPrice = async (val) => {
+    const coll = await readContract.getCollateral(val, 100);
+    setCollateral(fiveDecimals(ethers.utils.formatEther(coll, 0)));
   };
 
   const handleInputPerc = (e) => {
@@ -122,6 +151,11 @@ const Short = () => {
     } else {
       setpercVal(format);
     }
+  };
+
+  const maxInput = () => {
+    setinputAmount(userBal);
+    fetchPrice(userBal);
   };
 
   return (
@@ -150,14 +184,14 @@ const Short = () => {
                   value={inputAmount}
                   min={0}
                   type="number"
-                  placeholder="12.002"
+                  placeholder="285"
                   className="placeholder:text-[#ffffff65] w-[328px] md:w-[465px] outline-none pb-7 text-[24px] md:text-[40px] p-3 h-[57px] md:h-[87px] bg-transparent border-2"
                 />
                 <button className="absolute left-5 bottom-2 text-[14px] md:text-[20px] opacity-30 font-normal">
-                  ≈ {userBal} {Tokens[id].ticker}
+                  ≈ {collateral} BNB
                 </button>
                 <button
-                  onClick={() => setinputAmount(Number(userBal).toFixed(0))}
+                  onClick={maxInput}
                   className="absolute right-2 top-1 text-[14px] md:text-[24px] font-bold"
                 >
                   MAX
@@ -192,7 +226,10 @@ const Short = () => {
           <div className="flex gap-10 flex-col md:flex-row mb-5 md:mb-16 justify-start items-start md:items-center w-[350px] sm:w-[570px] md:w-[90%]">
             <div className="flex w-[170px] md:w-auto flex-col">
               <h2 className="text-[40px] lg:text-[60px] leading-[60px] font-light">
-                22 BNB
+                {Math.trunc(statTSupp)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                {Tokens[id].ticker}
               </h2>
               <span className="text-[16px] lg:text-[24px] font-normal">
                 Total Supply
@@ -206,30 +243,25 @@ const Short = () => {
                   style={{ width: "120px", height: "120px" }}
                   data={[
                     {
-                      title: "One",
-                      value: 10,
+                      title: "Total Pool",
+                      value: 1 - statInOrd / statTotalLent,
                       color: "#131313",
                     },
-                    { title: "Two", value: 15, color: "#C13C37" },
-                  ]}
-                />
-              </div>
-              <div className="md:hidden ml-7">
-                <PieChart
-                  style={{ width: "100px", height: "100px" }}
-                  data={[
-                    { title: "One", value: 10, color: "#ffffff17" },
-                    { title: "Two", value: 15, color: "#a12723" },
+                    {
+                      title: "Shorted",
+                      value: statInOrd / statTotalLent,
+                      color: "#C13C37",
+                    },
                   ]}
                 />
               </div>
 
               <div className="flex mb-6 md:mb-0 justify-center flex-col">
                 <span className="text-[24px] lg:text-[40px] lg:leading-[35px] font-normal">
-                  4,323M
+                  {statInOrd}
                 </span>
                 <span className="text-[14px] lg:text-[20px] opacity-30 font-normal">
-                  ≈ 0.027 BNB{" "}
+                  ≈ {statOrdWorth} BNB
                 </span>
                 <span className="text-[16px] lg:text-[24px] font-normal">
                   In Orders
@@ -240,22 +272,12 @@ const Short = () => {
 
           {/* Buttons */}
           <div className="flex gap-3 mb-16 w-[370px] sm:w-[570px] md:w-[95%] lg:w-[90%] font-medium">
-            {/* <button className="w-[173px] h-[53px] rounded-[53px] border-2">
-              <div className="w-full h-full text-[#ffffff] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
-                <img
-                  src={lock}
-                  alt=""
-                />{" "}
-                Approve
-              </div>
-            </button> */}
-
             <button
               onClick={openShort}
               className="w-[137px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]"
             >
-              <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
-                <div className="w-full h-full text-[#D34253] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
+              <div className=" flex h-full w-full items-center rounded-[53px] justify-center bg-black">
+                <div className="w-full transition duration-100 ease-in-out active:text-white active:bg-[#822e38b3] h-full text-[#D34253] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
                   <img
                     src={down}
                     alt=""
@@ -271,7 +293,7 @@ const Short = () => {
         </h2>
 
         {/* Desktop */}
-        <div className="hidden md:w-[95%] lg:w-[90%] md:flex">
+        <div className="hidden md:w-[95%] mb-20 lg:w-[90%] md:flex">
           <table className="w-full text-sm text-left">
             <thead className="text-white font-normal relative">
               {/* <button className="absolute hidden md:flex right-2 bottom-2 font-bold text-[16px] text-[#D34253] items-center gap-2">
@@ -290,19 +312,19 @@ const Short = () => {
                 </th>
                 <th
                   scope="col"
-                  class="px-2 xl:px-6 text-end py-3"
+                  class="px-2 text-center py-3"
                 >
                   Amount
                 </th>
                 <th
                   scope="col"
-                  class="px-2 xl:px-6 text-end py-3"
+                  class="px-2 text-center py-3"
                 >
                   Start Time
                 </th>
                 <th
                   scope="col"
-                  class="px-2 xl:px-6 text-end py-3"
+                  class="px-2  text-center py-3"
                 >
                   Risk Tolerace
                 </th>
@@ -324,8 +346,9 @@ const Short = () => {
             </tbody>
           </table>
         </div>
+
         {/* Mobile */}
-        <div className="md:hidden">
+        <div className="md:hidden mb-20">
           <table className="w-full flex flex-col items-center text-sm text-left">
             <thead className="text-white w-full flex justify-between font-normal">
               <tr className="text-[18px] w-full flex justify-between border-b-[2px] xl:text-[19px]">
@@ -393,25 +416,17 @@ const Short = () => {
             </tbody>
           </table>
         </div>
-        <div className="justify-between w-[380px] sm:w-[560px] md:w-[95%] lg:w-[90%] p-5 flex mb-20 bg-black">
-          <Link to="/">
-            <button className="flex font-bold text-[16px] items-center gap-2">
-              <img
-                src={drop}
-                alt=""
-                className="rotate-90"
-              />{" "}
-              Back
-            </button>
-          </Link>
-          <button className="md:hidden flex font-bold text-[16px] text-[#D34253] items-center gap-2">
+
+        <Link to="/">
+          <button className="fixed bg-black border-2 sm:border-[3px] p-2 sm:p-4 rounded-md sm:rounded-lg bottom-5 right-5 flex font-bold text-[18px] sm:text-[20px] items-center gap-2">
             <img
-              src={cancel}
+              src={drop}
               alt=""
+              className="rotate-90"
             />{" "}
-            Cancel All
+            Back
           </button>
-        </div>
+        </Link>
       </div>
     </section>
   );

@@ -10,59 +10,6 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/appContext";
 import { fiveDecimals } from "../../../utils";
 
-// export const TableItem1 = ({ index, name, ticker, address }) => {
-//   const [inOrd, setInOrd] = useState(0);
-//   const [pool, setPool] = useState(0);
-//   const [tsupply, settsupply] = useState(0);
-
-//   const { contAdd } = useContext(AppContext);
-//   const statProv = new ethers.providers.JsonRpcProvider(
-//     "https://rpc.ankr.com/bsc"
-//   );
-
-//   const tokenTest = address;
-//   const readTokContract = new ethers.Contract(tokenTest, ercAbi, statProv);
-
-//   const readContract = new ethers.Contract(contAdd, abi, statProv);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       const inOrdFt = await readContract.tokensInShorts();
-//       const poolFt = await readContract.totalLent();
-
-//       setInOrd(ethers.utils.formatUnits(inOrdFt, 0));
-//       setPool(ethers.utils.formatUnits(poolFt, 0));
-
-//       const tsup = await readTokContract.totalSupply();
-//       settsupply(ethers.utils.formatUnits(tsup, 18));
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   return (
-//     <tr
-//       className={
-//         index % 2 === 0
-//           ? "bg-black font-semibold text-white"
-//           : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
-//       }
-//     >
-//       <th
-//         scope="row"
-//         className="px-6 py-4"
-//       >
-//         {name}
-//       </th>
-//       <td className="px-6 py-4 text-center">{ticker}</td>
-//       <td className="px-6 py-4 text-center">$xx,xxx</td>
-//       <td className="px-6 py-4 text-end">xx%</td>
-//       <td className="px-6 py-4 text-end">{fiveDecimals(pool / tsupply)}%</td>
-//       <td className="px-6 py-4">{fiveDecimals(inOrd / pool)}%</td>
-
-//   );
-// };
-
 const TableItem = ({ index, name, ticker, address }) => {
   const [inOrd, setInOrd] = useState(0);
   const [pool, setPool] = useState(0);
