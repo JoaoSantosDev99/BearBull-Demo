@@ -1,46 +1,62 @@
 import { useState } from "react";
 
-const ShortTableItemMob = ({ index }) => {
-  const data = "test";
+const ShortTableItemMob = ({
+  index,
+  name,
+  amount,
+  startTime,
+  riskTol,
+  close,
+  block,
+  ticker,
+}) => {
   const [showButtons, setShowButtons] = useState(false);
+  const formatTime = (time) => {
+    const total = Number(time);
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = Math.floor((total % 3600) % 60);
 
+    const hDisplay = h > 0 ? h + (h === 1 ? " h, " : " h, ") : "";
+    const mDisplay = m > 0 ? m + (m === 1 ? " min, " : " min, ") : "";
+    const sDisplay = s > 0 ? s + (s === 1 ? " s" : " s") : "";
+    return hDisplay + mDisplay + sDisplay;
+  };
   return (
     <>
-      <tr
+      <div
         onClick={() => setShowButtons((e) => !e)}
         className={
           index % 2 !== 0
-            ? "bg-black font-semibold text-white"
-            : "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
+            ? "bg-black mt-2 flex font-semibold text-white w-[385px] sm:w-[420px]"
+            : "bg-gradient-to-r mt-2 flex from-[#191919] w-[385px] sm:w-[420px] via-[#181818] to-[#000] font-semibold text-white"
         }
       >
-        <th
-          scope="row"
-          className="px-6 py-4 min-w-[150px] sm:min-w-[280px]"
-        >
+        {/* Name/amount */}
+        <div className="px-2 w-full py-4">
           <div className="flex flex-col text-start text-[16px] font-semibold">
-            <span>Doge Inu</span>
-            <span className="text-[#898989]">DINU</span>
+            <span>{name}</span>
+            <span className="text-[#898989]">
+              {amount === "0" ? "__" : amount} {ticker}
+            </span>
           </div>
-        </th>
-        <th
-          scope="row"
-          className="px-2 py-4 min-w-[100px] sm:min-w-[280px]"
-        >
-          <div className="flex flex-col text-start text-[16px] font-semibold">
-            <span>$0.002</span>
+        </div>
+
+        {/* start/risk */}
+        <div className="px-2 w-full py-4">
+          <div className="flex w-auto flex-col text-end text-[16px] font-semibold">
+            <span>
+              {" "}
+              {block === 1337
+                ? "Loading"
+                : startTime === "0"
+                ? "__"
+                : formatTime(block - startTime) + " ago"}
+            </span>
+            <span>{riskTol === "0" ? "__" : riskTol}%</span>
           </div>
-        </th>
-        <th
-          scope="row"
-          className="px-6 py-4 min-w-[160px] sm:min-w-[280px]"
-        >
-          <div className="flex flex-col text-end text-[16px] font-semibold">
-            <span>127,152</span>
-            <span>0,00229 BNB</span>
-          </div>
-        </th>
-      </tr>
+        </div>
+      </div>
 
       {showButtons && (
         <div

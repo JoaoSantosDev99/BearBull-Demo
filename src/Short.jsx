@@ -111,17 +111,19 @@ const Short = () => {
     const coll = await readContract.getCollateral(inputAmount, 100);
 
     const writeContract = new ethers.Contract(contAdd, abi, signer);
-    console.log(coll);
+    console.log("coll", coll);
+
     try {
+      console.log("token", inputAmount, ethers.utils.formatUnits(coll));
+
       const openShort = await writeContract.openShort(inputAmount, 100, {
         value: coll,
       });
-
-      await openShort.wait();
-      alert("success");
-      fetchData();
+      // await openShort.wait();
+      // alert("success");
+      // fetchData();
     } catch (error) {
-      console.log(error);
+      console.log("err", error);
     }
   };
 
@@ -349,72 +351,32 @@ const Short = () => {
 
         {/* Mobile */}
         <div className="md:hidden mb-20">
-          <table className="w-full flex flex-col items-center text-sm text-left">
-            <thead className="text-white w-full flex justify-between font-normal">
-              <tr className="text-[18px] w-full flex justify-between border-b-[2px] xl:text-[19px]">
-                <th
-                  scope="col"
-                  class="text-start py-3 w-full"
-                >
-                  <div className="flex flex-col gap-5 w-full">
-                    <span className="flex justify-start gap-2 items-center border-b py-3 px-3">
-                      <div className="flex mb-5 gap-2 items-center">
-                        <img
-                          src={drop}
-                          alt=""
-                        />
-                        Name
-                      </div>
-                      <br />
-                    </span>
-                    <span className="px-3">Ticker</span>
-                  </div>
-                </th>
+          <div className="flex font-bold text-[18px] justify-between md:hidden mb-2 w-[385px] sm:w-[420px] border-b">
+            {/* part 1 */}
+            <div className="flex gap-5 flex-col w-full">
+              <span className="px-3 py-3 border-b"> Name</span>
+              <span className="px-3 pb-2">Amount</span>
+            </div>
+            {/* part 2 */}
+            <div className="flex gap-5 flex-col text-end w-full">
+              <span className="px-3 py-3 border-b"> Start Time</span>
+              <span className="px-3 pb-2">Risk Tolerance</span>
+            </div>
+          </div>
 
-                <th
-                  scope="col"
-                  class="text-start py-3 w-full"
-                >
-                  <div className="flex flex-col gap-5 w-full">
-                    <span className="border-b py-3 text-end px-3">
-                      Entry <br /> Price
-                    </span>
-                    <span className="text-end px-3"></span>
-                  </div>
-                </th>
-
-                <th
-                  scope="col"
-                  class="text-start py-3 w-full"
-                >
-                  <div className="flex flex-col gap-5 w-full">
-                    <span className="border-b py-3 text-end px-3">
-                      Short <br /> Value
-                    </span>
-                    <span className="text-end px-3">PnL</span>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-
-            {/* Body */}
-            <tbody>
-              <ShortTableItemMob index={1} />
-              <ShortTableItemMob index={2} />
-              <ShortTableItemMob index={1} />
-              <ShortTableItemMob index={2} />
-              <ShortTableItemMob index={1} />
-              <ShortTableItemMob index={2} />
-              <ShortTableItemMob index={1} />
-              <ShortTableItemMob index={2} />
-              <ShortTableItemMob index={1} />
-              <ShortTableItemMob index={2} />
-              <ShortTableItemMob index={1} />
-              <ShortTableItemMob index={2} />
-              <ShortTableItemMob index={1} />
-              <ShortTableItemMob index={2} />
-            </tbody>
-          </table>
+          {/* Body */}
+          <div>
+            <ShortTableItemMob
+              index={2}
+              name={Tokens[id].name}
+              amount={itemAmount}
+              startTime={itemStartTime}
+              riskTol={itemRiskTol}
+              block={currentBlock}
+              ticker={Tokens[id].ticker}
+              close={closeShort}
+            />
+          </div>
         </div>
 
         <Link to="/">
