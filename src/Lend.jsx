@@ -80,12 +80,12 @@ const Lend = () => {
   };
 
   useEffect(() => {
-    setInterval(async () => {
-      const currenBlock = statProv.blockNumber;
-      const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
-      setCurrentBlock(timestamp);
-      console.log(timestamp);
-    }, 5000);
+    // setInterval(async () => {
+    //   const currenBlock = statProv.blockNumber;
+    //   const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
+    //   setCurrentBlock(timestamp);
+    //   console.log(timestamp);
+    // }, 5000);
 
     fetchData();
   }, []);
@@ -368,58 +368,34 @@ const Lend = () => {
         </div>
 
         {/* Mobile */}
-        <div className="md:hidden">
-          <table className="w-full flex flex-col items-center text-sm text-left">
-            <thead className="text-white w-full flex justify-between font-normal">
-              <tr className="text-[18px] w-full flex justify-between border-b-[2px] xl:text-[19px]">
-                <th
-                  scope="col"
-                  class="text-start py-3 w-full"
-                >
-                  <div className="flex flex-col gap-5 w-full">
-                    <span className="flex justify-start gap-2 items-center border-b py-3 px-3">
-                      <img
-                        src={drop}
-                        alt=""
-                      />
-                      Name
-                    </span>
-                    <span className="px-3">Ticker</span>
-                  </div>
-                </th>
+        <div className="md:hidden mb-20">
+          <div className="flex font-bold text-[18px] justify-between md:hidden mb-2 w-[385px] sm:w-[420px] border-b">
+            {/* part 1 */}
+            <div className="flex gap-5 flex-col w-full">
+              <span className="px-3 py-3 border-b"> Name</span>
+            </div>
+            {/* part 2 */}
+            <div className="flex gap-5 flex-col text-center w-full">
+              <span className="px-3 py-3 border-b"> Amount</span>
+            </div>
 
-                <th
-                  scope="col"
-                  class="text-start py-3 w-full"
-                >
-                  <div className="flex flex-col gap-5 w-full">
-                    <span className="border-b py-3 text-end px-3">
-                      Supply Pooled
-                    </span>
-                    <span className="text-end px-3">Rewards Pooled</span>
-                  </div>
-                </th>
-              </tr>
-            </thead>
+            {/* part 3 */}
+            <div className="flex gap-5 flex-col text-end w-full">
+              <span className="px-3 py-3 border-b"> End Time</span>
+            </div>
+          </div>
 
-            {/* Body */}
-            <tbody>
-              <LendTableItemMob index={1} />
-              <LendTableItemMob index={2} />
-              <LendTableItemMob index={1} />
-              <LendTableItemMob index={2} />
-              <LendTableItemMob index={1} />
-              <LendTableItemMob index={2} />
-              <LendTableItemMob index={1} />
-              <LendTableItemMob index={2} />
-              <LendTableItemMob index={1} />
-              <LendTableItemMob index={2} />
-              <LendTableItemMob index={1} />
-              <LendTableItemMob index={2} />
-              <LendTableItemMob index={1} />
-              <LendTableItemMob index={2} />
-            </tbody>
-          </table>
+          {/* Body */}
+          <div>
+            <LendTableItemMob
+              index={2}
+              name={Tokens[id].name}
+              amount={orderAmount}
+              endTime={orderEndTime}
+              block={currentBlock}
+              close={closeLend}
+            />
+          </div>
         </div>
 
         <Link to="/">

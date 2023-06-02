@@ -80,12 +80,12 @@ const Short = () => {
   };
 
   useEffect(() => {
-    setInterval(async () => {
-      const currenBlock = statProv.blockNumber;
-      const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
-      setCurrentBlock(timestamp);
-      console.log(timestamp);
-    }, 5000);
+    // setInterval(async () => {
+    //   const currenBlock = statProv.blockNumber;
+    //   const timestamp = (await statProv.getBlock(currenBlock)).timestamp;
+    //   setCurrentBlock(timestamp);
+    //   console.log(timestamp);
+    // }, 5000);
 
     fetchData();
   }, []);
