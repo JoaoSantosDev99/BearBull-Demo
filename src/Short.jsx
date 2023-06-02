@@ -36,6 +36,7 @@ const Short = () => {
 
   const [inputAmount, setinputAmount] = useState();
   const [percVal, setpercVal] = useState(0);
+  const [placeHval, setPlaceHval] = useState(0);
 
   const [currentBlock, setCurrentBlock] = useState(1337);
 
@@ -48,7 +49,11 @@ const Short = () => {
   const readTokenContract = new ethers.Contract(shortToken, ercAbi, statProv);
 
   const fetchData = async () => {
-    const ftsup = await readTokenContract.totalSupply();
+    if (Tokens[id].totalSupply === "false") {
+      const ftsup = await readTokenContract.totalSupply();
+      setTSupp(ethers.utils.formatUnits(ftsup, 18));
+    }
+
     const inOrdFt = await readContract.tokensInShorts();
     const fworth = await readContract.getCollateral(
       ethers.utils.formatUnits(inOrdFt, 0),
@@ -61,7 +66,9 @@ const Short = () => {
     setstatInOrd(ethers.utils.formatUnits(inOrdFt, 0));
 
     setstatOrdWorth(fiveDecimals(ethers.utils.formatUnits(fworth, 18)));
-    setTSupp(ethers.utils.formatUnits(ftsup, 18));
+
+    const fworthPlaceHolder = await readContract.getCollateral(285, 100);
+    setPlaceHval(fiveDecimals(ethers.utils.formatUnits(fworthPlaceHolder, 18)));
 
     if (isConnected) {
       const data = await readContract.shortMap(address);
@@ -94,7 +101,7 @@ const Short = () => {
     try {
       const cancel = await writeContract.closeShort();
       await cancel.wait();
-      alert("Success");
+      alert("success");
       fetchData();
     } catch (error) {
       console.log(error);
@@ -115,11 +122,11 @@ const Short = () => {
       const openShort = await writeContract.openShort(inputAmount, 100, {
         value: coll,
       });
-      // await openShort.wait();
-      // alert("success");
-      // fetchData();
+      await openShort.wait();
+      alert("success");
+      fetchData();
     } catch (error) {
-      console.log("err", error);
+      console.log(error);
     }
   };
 
@@ -186,7 +193,7 @@ const Short = () => {
                   className="placeholder:text-[#ffffff65] w-[328px] md:w-[465px] outline-none pb-7 text-[24px] md:text-[40px] p-3 h-[57px] md:h-[87px] bg-transparent border-2"
                 />
                 <button className="absolute left-5 bottom-2 text-[14px] md:text-[20px] opacity-30 font-normal">
-                  ≈ {collateral} BNB
+                  ≈ {collateral === 0 ? placeHval : collateral} BNB
                 </button>
                 <button
                   onClick={maxInput}
@@ -224,9 +231,12 @@ const Short = () => {
           <div className="flex gap-10 flex-col md:flex-row mb-5 md:mb-16 justify-start items-start md:items-center w-[350px] sm:w-[570px] md:w-[90%]">
             <div className="flex w-[170px] md:w-auto flex-col">
               <h2 className="text-[40px] lg:text-[60px] leading-[60px] font-light">
-                {Math.trunc(statTSupp)
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                {Tokens[id].totalSupply === "false"
+                  ? Math.trunc(statTSupp)
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  : Tokens[id].totalSupply}
+
                 {Tokens[id].ticker}
               </h2>
               <span className="text-[16px] lg:text-[24px] font-normal">
@@ -235,7 +245,7 @@ const Short = () => {
             </div>
 
             {/* chart */}
-            <div className="flex gap-5 -ml-8 md:ml-0 w-[170px] md:w-auto justify-start">
+            <div className="flex gap-5 md:ml-0 w-[170px] md:w-auto justify-start">
               <div className="hidden md:flex">
                 <PieChart
                   style={{ width: "120px", height: "120px" }}

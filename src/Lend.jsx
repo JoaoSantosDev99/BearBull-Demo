@@ -34,6 +34,7 @@ const Lend = () => {
 
   const [inputAmount, setinputAmount] = useState();
   const [percVal, setpercVal] = useState(0);
+  const [placeHval, setPlaceHval] = useState(0);
 
   const { data: signer } = useSigner();
   const { address, isConnected } = useAccount();
@@ -44,9 +45,11 @@ const Lend = () => {
   const readTokenContract = new ethers.Contract(tokenAdd, ercAbi, statProv);
 
   const fetchData = async () => {
-    const ftsup = await readTokenContract.totalSupply();
-    const tsupFormated = ethers.utils.formatUnits(ftsup);
-    setstatTSup(tsupFormated);
+    if (Tokens[id].totalSupply === "false") {
+      const ftsup = await readTokenContract.totalSupply();
+      const tsupFormated = ethers.utils.formatUnits(ftsup);
+      setstatTSup(tsupFormated);
+    }
 
     const totalLent = await readContract.totalLent();
     setstatTotalLent(ethers.utils.formatUnits(totalLent, 0));
@@ -56,6 +59,9 @@ const Lend = () => {
       100
     );
     setstatWorthBbn(fiveDecimals(ethers.utils.formatUnits(fworth, 18)));
+
+    const fworthPlaceHolder = await readContract.getCollateral(642, 100);
+    setPlaceHval(fiveDecimals(ethers.utils.formatUnits(fworthPlaceHolder, 18)));
 
     if (isConnected) {
       const userBal = await readTokenContract.balanceOf(address);
@@ -108,11 +114,10 @@ const Lend = () => {
       const lend = await writeContract.lendTokens(inputAmount, dateVal);
 
       await lend.wait();
-      alert("succedd");
+      alert("success");
       fetchData();
     } catch (error) {
       console.log(error);
-      console.log("error");
     }
   };
 
@@ -123,7 +128,6 @@ const Lend = () => {
 
     try {
       const closePos = await writeContract.withdrawTokens();
-
       await closePos.wait();
       alert("success");
     } catch (error) {
@@ -192,11 +196,11 @@ const Lend = () => {
                   value={inputAmount}
                   min={0}
                   type="number"
-                  placeholder="12.002"
+                  placeholder="642"
                   className="placeholder:text-[#ffffff65] w-[328px] md:w-[465px] outline-none pb-7 text-[24px] md:text-[40px] p-3 h-[57px] md:h-[87px] bg-transparent border-2"
                 />
                 <button className="absolute left-5 bottom-2 text-[14px] md:text-[20px] opacity-30 font-normal">
-                  ≈ {bnbVal} BNB
+                  ≈ {bnbVal !== 0 ? bnbVal : placeHval} BNB
                 </button>
                 <button
                   onClick={() => setinputAmount(userBal)}
@@ -227,7 +231,11 @@ const Lend = () => {
           <div className="flex flex-wrap mb-5 md:mb-16 justify-between items-center w-[370px] sm:w-[570px] md:w-[90%]">
             <div className="flex w-[170px] md:w-auto flex-col">
               <h2 className="text-[40px] lg:text-[60px] leading-[60px] font-light">
-                {formatCommas(statTSup)}
+                {Tokens[id].totalSupply === "false"
+                  ? Math.trunc(statTSup)
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  : Tokens[id].totalSupply}
               </h2>
               <span className="text-[16px] lg:text-[24px] font-normal">
                 Total Supply
@@ -290,16 +298,6 @@ const Lend = () => {
 
           {/* Buttons */}
           <div className="flex gap-3 mb-16 w-[370px] sm:w-[570px] md:w-[95%] lg:w-[90%] font-medium">
-            {/* <button className="w-[173px] h-[53px] rounded-[53px] border-2">
-              <div className="w-full h-full text-[#ffffff] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
-                <img
-                  src={lock}
-                  alt=""
-                />{" "}
-                Approve
-              </div>
-            </button> */}
-
             <button
               onClick={lend}
               className="w-[137px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]"
