@@ -6,9 +6,9 @@ const LendTableItem = ({
   close,
   block,
   ticker,
+  claim,
+  rewards,
 }) => {
-  // window.scrollTo({ top: 0 });
-
   const formatTime = (time) => {
     const total = Number(time);
     const h = Math.floor(total / 3600);
@@ -45,10 +45,25 @@ const LendTableItem = ({
           ? "Loading"
           : formatTime(endTime - block)}
       </td>
+      <td className="px-6 py-4 text-end">
+        {rewards === 0 || rewards === "0" ? "__" : rewards}
+      </td>
 
       {/* buttons */}
       <td className="px-6 py-4 flex justify-end gap-2">
-        {/* lend */}
+        {/* claim */}
+        <button
+          onClick={claim}
+          className="w-[160px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]"
+        >
+          <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
+            <div className="w-full h-full active:text-black active:bg-[#1aa38a] text-[#28FDD7] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
+              Claim Rewards
+            </div>
+          </div>
+        </button>
+
+        {/* withdraw */}
         <button
           onClick={close}
           className="w-[180px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]"

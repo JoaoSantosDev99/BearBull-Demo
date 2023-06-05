@@ -27,6 +27,7 @@ const Lend = () => {
 
   const [orderAmount, setorderAmount] = useState(0);
   const [orderEndTime, setorderEndTime] = useState(0);
+  const [orderRewards, setorderRewards] = useState(0);
 
   const [statTSup, setstatTSup] = useState(0);
   const [statTotalLent, setstatTotalLent] = useState(0);
@@ -39,17 +40,17 @@ const Lend = () => {
   const { data: signer } = useSigner();
   const { address, isConnected } = useAccount();
 
-  const tokenAdd = "0x4F0F2fA439C6454B4664f3C4432514Ec07c1bC28";
-
   const readContract = new ethers.Contract(contAdd, abi, statProv);
-  const readTokenContract = new ethers.Contract(tokenAdd, ercAbi, statProv);
+  const readTokenContract = new ethers.Contract(
+    Tokens[id].address,
+    ercAbi,
+    statProv
+  );
 
   const fetchData = async () => {
-    if (Tokens[id].totalSupply === "false") {
-      const ftsup = await readTokenContract.totalSupply();
-      const tsupFormated = ethers.utils.formatUnits(ftsup);
-      setstatTSup(tsupFormated);
-    }
+    const ftsup = await readTokenContract.totalSupply();
+    const tsupFormated = ethers.utils.formatUnits(ftsup);
+    setstatTSup(tsupFormated);
 
     const totalLent = await readContract.totalLent();
     setstatTotalLent(ethers.utils.formatUnits(totalLent, 0));
@@ -58,6 +59,7 @@ const Lend = () => {
       ethers.utils.formatUnits(totalLent, 0),
       100
     );
+
     setstatWorthBbn(fiveDecimals(ethers.utils.formatUnits(fworth, 18)));
 
     const fworthPlaceHolder = await readContract.getCollateral(642, 100);
@@ -68,7 +70,6 @@ const Lend = () => {
       const formated = twoDecimals(Number(ethers.utils.formatEther(userBal)));
 
       const lendInfo = await readContract.lendMap(address);
-      console.log(lendInfo);
 
       const ordAmount = ethers.utils.formatUnits(lendInfo.amount, 0);
       const ordEndtime = ethers.utils.formatUnits(lendInfo.endTime, 0);
@@ -77,8 +78,9 @@ const Lend = () => {
       setorderEndTime(ordEndtime);
 
       setUserbal(formated);
-
-      console.log(formated);
+      setorderRewards(
+        fiveDecimals(ethers.utils.formatUnits(lendInfo.rewards, 18))
+      );
     }
   };
 
@@ -101,7 +103,7 @@ const Lend = () => {
     if (!isConnected) return alert("Not connected!");
 
     const writeContract = new ethers.Contract(contAdd, abi, signer);
-    const wTkContract = new ethers.Contract(tokenAdd, ercAbi, signer);
+    const wTkContract = new ethers.Contract(Tokens[id].address, ercAbi, signer);
 
     try {
       const approve = await wTkContract.approve(
@@ -110,6 +112,7 @@ const Lend = () => {
       );
 
       await approve.wait();
+      console.log(inputAmount);
 
       const lend = await writeContract.lendTokens(inputAmount, dateVal);
 
@@ -130,6 +133,21 @@ const Lend = () => {
       const closePos = await writeContract.withdrawTokens();
       await closePos.wait();
       alert("success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const claimRewards = async () => {
+    if (!isConnected) return alert("Not connected!");
+
+    const writeContract = new ethers.Contract(contAdd, abi, signer);
+
+    try {
+      const claim = await writeContract.claimRewards();
+      await claim.wait();
+      alert("success");
+      fetchData();
     } catch (error) {
       console.log(error);
     }
@@ -156,18 +174,6 @@ const Lend = () => {
     } else {
       setpercVal(format);
     }
-  };
-
-  const formatTime = (time) => {
-    const total = Number(time);
-    const h = Math.floor(total / 3600);
-    const m = Math.floor((total % 3600) / 60);
-    const s = Math.floor((total % 3600) % 60);
-
-    const hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-    const mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-    const sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
-    return hDisplay + mDisplay + sDisplay;
   };
 
   return (
@@ -344,6 +350,12 @@ const Lend = () => {
                 >
                   End Time
                 </th>
+                <th
+                  scope="col"
+                  class="px-2 xl:px-6 text-end py-3"
+                >
+                  Rewards
+                </th>
               </tr>
             </thead>
 
@@ -356,6 +368,8 @@ const Lend = () => {
                 block={currentBlock}
                 index={1}
                 close={closeLend}
+                claim={claimRewards}
+                rewards={orderRewards}
                 ticker={Tokens[id].ticker}
               />
             </tbody>
@@ -367,16 +381,14 @@ const Lend = () => {
           <div className="flex font-bold text-[18px] justify-between md:hidden mb-2 w-[385px] sm:w-[420px] border-b">
             {/* part 1 */}
             <div className="flex gap-5 flex-col w-full">
-              <span className="px-3 py-3 border-b"> Name</span>
-            </div>
-            {/* part 2 */}
-            <div className="flex gap-5 flex-col text-center w-full">
-              <span className="px-3 py-3 border-b"> Amount</span>
+              <span className="px-3 py-2 border-b"> Name</span>
+              <span className="px-3 py-2"> Amount</span>
             </div>
 
             {/* part 3 */}
             <div className="flex gap-5 flex-col text-end w-full">
-              <span className="px-3 py-3 border-b"> End Time</span>
+              <span className="px-3 py-2 border-b"> End Time</span>
+              <span className="px-3 py-2"> Rewards</span>
             </div>
           </div>
 
@@ -389,12 +401,14 @@ const Lend = () => {
               endTime={orderEndTime}
               block={currentBlock}
               close={closeLend}
+              claim={claimRewards}
+              rewards={orderRewards}
             />
           </div>
         </div>
 
         <Link to="/">
-          <button className="fixed bg-black border-[3px] p-5 rounded-lg bottom-5 right-5 flex font-bold text-[16px] items-center gap-2">
+          <button className="fixed focus:bg-[#474747] transition-all duration-100 ease-in-out bg-black border-2 sm:border-[3px] p-2 sm:p-4 rounded-md sm:rounded-lg bottom-5 right-5 flex font-bold text-[18px] sm:text-[20px] items-center gap-2">
             <img
               src={drop}
               alt=""

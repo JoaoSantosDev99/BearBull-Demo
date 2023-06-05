@@ -133,18 +133,9 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_owner", "type": "address" }
+      { "internalType": "uint256", "name": "_maxTx", "type": "uint256" }
     ],
-    "name": "changeOwner",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "_threshold", "type": "uint256" }
-    ],
-    "name": "changeThreshold",
+    "name": "changeMaxTxPercent",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -162,12 +153,26 @@
     "inputs": [],
     "name": "checkAvailable",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "checkPrice",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claimRewards",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "closeFee",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
@@ -189,9 +194,22 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "bool", "name": "_lend", "type": "bool" }],
+    "name": "enableLending",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bool", "name": "_trade", "type": "bool" }],
+    "name": "enableTrade",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
-      { "internalType": "uint256", "name": "amountOut", "type": "uint256" },
-      { "internalType": "address[]", "name": "path", "type": "address[]" }
+      { "internalType": "uint256", "name": "amountOut", "type": "uint256" }
     ],
     "name": "getBuybackCost",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
@@ -209,18 +227,18 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getPrice",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       { "internalType": "uint256", "name": "amountOut", "type": "uint256" }
     ],
     "name": "getValue",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lendEnabled",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -232,7 +250,8 @@
       { "internalType": "uint256", "name": "lendNumber", "type": "uint256" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" },
       { "internalType": "uint256", "name": "amountInTrade", "type": "uint256" },
-      { "internalType": "uint256", "name": "endTime", "type": "uint256" }
+      { "internalType": "uint256", "name": "endTime", "type": "uint256" },
+      { "internalType": "uint256", "name": "rewards", "type": "uint256" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -259,6 +278,13 @@
     "name": "liquidate",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "maxTxPercent",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -307,6 +333,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "openFee",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       { "internalType": "uint256", "name": "amount", "type": "uint256" },
       { "internalType": "uint256", "name": "riskTolerance", "type": "uint256" }
@@ -314,6 +347,13 @@
     "name": "openShort",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -359,6 +399,13 @@
   },
   {
     "inputs": [],
+    "name": "threshold",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "token",
     "outputs": [
       { "internalType": "contract IBEP20", "name": "", "type": "address" }
@@ -391,6 +438,13 @@
     "inputs": [],
     "name": "totalLent",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tradeEnabled",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },

@@ -9,6 +9,7 @@ const ShortTableItemMob = ({
   close,
   block,
   ticker,
+  Pnl,
 }) => {
   const [showButtons, setShowButtons] = useState(false);
   const formatTime = (time) => {
@@ -42,16 +43,30 @@ const ShortTableItemMob = ({
           </div>
         </div>
 
+        {/* Pnl */}
+        <div className="px-2 w-full py-4">
+          <div className="flex flex-col text-center text-[16px] font-semibold">
+            {Pnl.toString().indexOf("-") === -1 ? (
+              <span className="px-2 py-4 text-[#3ecd21] text-center">
+                {Pnl}BNB
+              </span>
+            ) : (
+              <span className="px-2 py-4 text-[#cd3521] text-center">
+                {Pnl}BNB
+              </span>
+            )}
+          </div>
+        </div>
+
         {/* start/risk */}
         <div className="px-2 w-full py-4">
           <div className="flex w-auto flex-col text-end text-[16px] font-semibold">
             <span>
-              {" "}
               {block === 1337
                 ? "Loading"
-                : startTime === "0"
+                : startTime === "0" || startTime === 0
                 ? "__"
-                : formatTime(block - startTime) + " ago"}
+                : formatTime(block - startTime) + " agoaawasd"}
             </span>
             <span>{riskTol === "0" ? "__" : riskTol}%</span>
           </div>
@@ -67,7 +82,10 @@ const ShortTableItemMob = ({
           }
         >
           {/* short */}
-          <div className="w-[160px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]">
+          <div
+            onClick={close}
+            className="w-[160px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#D34253] to-[#3C1217] p-[2px]"
+          >
             <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
               <div className="w-full h-full text-[#D34253] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
                 Close Position

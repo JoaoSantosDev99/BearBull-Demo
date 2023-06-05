@@ -1,6 +1,7 @@
 import tg from "./assets/icons/tg.svg";
 import tw from "./assets/icons/twtt.svg";
 import dk from "./assets/icons/dk.svg";
+import Timer from "./components/UI/Timer";
 
 const Hero = () => {
   return (
@@ -15,6 +16,7 @@ const Hero = () => {
             We double your profit opportunities. Lend or short any low cap
             crypto!
           </span>
+          {/* <Timer /> */}
           <div className="flex">
             <img
               src={tg}

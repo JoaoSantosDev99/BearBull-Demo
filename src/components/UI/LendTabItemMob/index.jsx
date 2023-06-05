@@ -1,6 +1,15 @@
 import { useState } from "react";
 
-const LendTableItemMob = ({ index, block, amount, name, close, endTime }) => {
+const LendTableItemMob = ({
+  index,
+  block,
+  amount,
+  name,
+  close,
+  endTime,
+  claim,
+  rewards,
+}) => {
   const [showButtons, setShowButtons] = useState(false);
 
   const formatTime = (time) => {
@@ -26,25 +35,24 @@ const LendTableItemMob = ({ index, block, amount, name, close, endTime }) => {
         }
       >
         {/* Name/amount */}
-        <div className="px-2 w-full py-4">
+        <div className="px-2 flex flex-col w-full py-4">
           <span>{name}</span>
-        </div>
-
-        {/* amount */}
-        <div className="px-2 text-center w-full py-4">
           <span className="text-[#898989]">
             {amount === "0" ? "_" : amount}
           </span>
         </div>
 
         {/* endtime */}
-        <div className="px-2 text-end w-full py-4">
+        <div className="px-2 flex flex-col text-end w-full py-4">
           <span className="text-[#898989]">
             {endTime === "0"
               ? "_"
               : block === 1337
               ? "Loading"
               : formatTime(endTime - block)}{" "}
+          </span>
+          <span className="text-[#898989]">
+            {rewards === 0 || rewards === "0" ? "__" : rewards}
           </span>
         </div>
       </div>
@@ -57,7 +65,19 @@ const LendTableItemMob = ({ index, block, amount, name, close, endTime }) => {
               : "bg-gradient-to-r py-3 flex justify-center gap-5 from-[#191919] via-[#181818] to-[#000] font-semibold text-white"
           }
         >
-          {/* lend */}
+          {/* claim */}
+          <div
+            onClick={claim}
+            className="w-[160px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]"
+          >
+            <div className="flex h-full w-full items-center rounded-[53px] justify-center bg-black">
+              <div className="w-full h-full text-[#28FDD7] rounded-[53px] border-2 border-transparent flex justify-center items-center gap-2 bg-black">
+                Cliaim Rewards
+              </div>
+            </div>
+          </div>
+
+          {/* withdraw */}
           <div
             onClick={close}
             className="w-[180px] h-[53px] rounded-[53px] bg-gradient-to-br from-[#28FDD7] to-[#0B453B] p-[2px]"

@@ -7,6 +7,7 @@ const ShortTableItem = ({
   close,
   block,
   ticker,
+  Pnl,
 }) => {
   const formatTime = (time) => {
     const total = Number(time);
@@ -39,13 +40,19 @@ const ShortTableItem = ({
       <td className="px-2 py-4 text-center">
         {block === 1337
           ? "Loading"
-          : startTime === "0"
+          : startTime === "0" || startTime === 0
           ? "__"
           : formatTime(block - startTime) + " ago"}
       </td>
       <td className="px-2 py-4 text-center">
         {riskTol === "0" ? "__" : riskTol}%
       </td>
+
+      {Pnl.toString().indexOf("-") === -1 ? (
+        <td className="px-2 py-4 text-[#3ecd21] text-center">{Pnl}BNB</td>
+      ) : (
+        <td className="px-2 py-4 text-[#cd3521] text-center">{Pnl}BNB</td>
+      )}
 
       {/* buttons */}
       <td className="px-6 py-4 flex justify-end gap-2">

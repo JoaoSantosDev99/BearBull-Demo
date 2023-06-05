@@ -29,6 +29,7 @@ const Short = () => {
   const [itemStartTime, setitemStartTime] = useState(0);
   const [itemAmount, setitemAmount] = useState(0);
   const [itemRiskTol, setitemRiskTol] = useState(0);
+  const [itemPnl, setitemPnl] = useState(0);
 
   const [userBal, setUserbal] = useState(0);
   const [collateral, setCollateral] = useState(0);
@@ -44,28 +45,29 @@ const Short = () => {
   const { address, isConnected } = useAccount();
 
   const shortToken = Tokens[id].address;
-  // ercAbi
+
   const readContract = new ethers.Contract(contAdd, abi, statProv);
   const readTokenContract = new ethers.Contract(shortToken, ercAbi, statProv);
 
   const fetchData = async () => {
-    if (Tokens[id].totalSupply === "false") {
-      const ftsup = await readTokenContract.totalSupply();
-      setTSupp(ethers.utils.formatUnits(ftsup, 18));
-    }
+    const ftsup = await readTokenContract.totalSupply();
+    setTSupp(ethers.utils.formatUnits(ftsup, 18));
 
     const inOrdFt = await readContract.tokensInShorts();
-    const fworth = await readContract.getCollateral(
-      ethers.utils.formatUnits(inOrdFt, 0),
-      100
-    );
+
+    // avoids breaking when no tokens are staked
+    if (!ethers.utils.formatUnits(inOrdFt, 0) === "0") {
+      const fworth = await readContract.getCollateral(
+        ethers.utils.formatUnits(inOrdFt, 0),
+        100
+      );
+      setstatOrdWorth(fiveDecimals(ethers.utils.formatUnits(fworth, 18)));
+    }
 
     const poolFt = await readContract.totalLent();
     setstatTotalLent(ethers.utils.formatUnits(poolFt, 0));
 
     setstatInOrd(ethers.utils.formatUnits(inOrdFt, 0));
-
-    setstatOrdWorth(fiveDecimals(ethers.utils.formatUnits(fworth, 18)));
 
     const fworthPlaceHolder = await readContract.getCollateral(285, 100);
     setPlaceHval(fiveDecimals(ethers.utils.formatUnits(fworthPlaceHolder, 18)));
@@ -74,6 +76,26 @@ const Short = () => {
       const data = await readContract.shortMap(address);
       const fuserBal = await readTokenContract.balanceOf(address);
       const formated = twoDecimals(Number(ethers.utils.formatEther(fuserBal)));
+
+      if (
+        ethers.utils.formatUnits(data.amount, 0) !== "0" ||
+        ethers.utils.formatUnits(data.amount, 0) !== 0
+      ) {
+        const baybackCost = await readContract.getBuybackCost(
+          ethers.utils.formatUnits(data.amount, 0)
+        );
+
+        const initialBuy = await readContract.getValue(
+          ethers.utils.formatUnits(data.ethValue, 0)
+        );
+
+        const parsedBBC = ethers.utils.formatUnits(baybackCost, 18);
+        const parsedCost = ethers.utils.formatUnits(initialBuy, 18);
+
+        console.log(parsedCost - parsedBBC);
+
+        setitemPnl(fiveDecimals(parsedCost - parsedBBC));
+      }
 
       setUserbal(formated);
       setitemAmount(ethers.utils.formatUnits(data.amount, 0));
@@ -114,13 +136,12 @@ const Short = () => {
     const coll = await readContract.getCollateral(inputAmount, 100);
 
     const writeContract = new ethers.Contract(contAdd, abi, signer);
-    console.log("coll", coll);
+    console.log("coll", ethers.utils.formatUnits(coll, 0));
+    const parsColl = ethers.utils.formatUnits(coll, 0);
 
     try {
-      console.log("token", inputAmount, ethers.utils.formatUnits(coll));
-
       const openShort = await writeContract.openShort(inputAmount, 100, {
-        value: coll,
+        value: ethers.BigNumber.from((parsColl * 1.06).toString()),
       });
       await openShort.wait();
       alert("success");
@@ -304,37 +325,36 @@ const Short = () => {
         <div className="hidden md:w-[95%] mb-20 lg:w-[90%] md:flex">
           <table className="w-full text-sm text-left">
             <thead className="text-white font-normal relative">
-              {/* <button className="absolute hidden md:flex right-2 bottom-2 font-bold text-[16px] text-[#D34253] items-center gap-2">
-                <img
-                  src={cancel}
-                  alt=""
-                />{" "}
-                Close All
-              </button> */}
               <tr className="text-[18px] border-b-[2px] xl:text-[19px]">
                 <th
                   scope="col"
-                  class="px-2 xl:px-6 text-start py-3"
+                  className="px-2 xl:px-6 text-start py-3"
                 >
                   Name
                 </th>
                 <th
                   scope="col"
-                  class="px-2 text-center py-3"
+                  className="px-2 text-center py-3"
                 >
                   Amount
                 </th>
                 <th
                   scope="col"
-                  class="px-2 text-center py-3"
+                  className="px-2 text-center py-3"
                 >
                   Start Time
                 </th>
                 <th
                   scope="col"
-                  class="px-2  text-center py-3"
+                  className="px-2  text-center py-3"
                 >
                   Risk Tolerace
+                </th>
+                <th
+                  scope="col"
+                  className="px-2 text-center py-3"
+                >
+                  PnL
                 </th>
               </tr>
             </thead>
@@ -350,6 +370,7 @@ const Short = () => {
                 block={currentBlock}
                 ticker={Tokens[id].ticker}
                 close={closeShort}
+                Pnl={itemPnl}
               />
             </tbody>
           </table>
@@ -363,10 +384,17 @@ const Short = () => {
               <span className="px-3 py-3 border-b"> Name</span>
               <span className="px-3 pb-2">Amount</span>
             </div>
+
+            {/* part 1 */}
+            <div className="flex gap-5 flex-col w-full">
+              <span className="px-3 py-3 text-center border-b"> PnL</span>
+              <span className="px-3 pb-2"></span>
+            </div>
+
             {/* part 2 */}
             <div className="flex gap-5 flex-col text-end w-full">
               <span className="px-3 py-3 border-b"> Start Time</span>
-              <span className="px-3 pb-2">Risk Tolerance</span>
+              <span className="px-3 pb-2">Risk Tol.</span>
             </div>
           </div>
 
@@ -381,17 +409,18 @@ const Short = () => {
               block={currentBlock}
               ticker={Tokens[id].ticker}
               close={closeShort}
+              Pnl={itemPnl}
             />
           </div>
         </div>
 
         <Link to="/">
-          <button className="fixed bg-black border-2 sm:border-[3px] p-2 sm:p-4 rounded-md sm:rounded-lg bottom-5 right-5 flex font-bold text-[18px] sm:text-[20px] items-center gap-2">
+          <button className="fixed focus:bg-[#474747] transition-all duration-100 ease-in-out bg-black border-2 sm:border-[3px] p-2 sm:p-4 rounded-md sm:rounded-lg bottom-5 right-5 flex font-bold text-[18px] sm:text-[20px] items-center gap-2">
             <img
               src={drop}
               alt=""
               className="rotate-90"
-            />{" "}
+            />
             Back
           </button>
         </Link>
