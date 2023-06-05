@@ -46,13 +46,19 @@ const ShortTableItemMob = ({
         {/* Pnl */}
         <div className="px-2 w-full py-4">
           <div className="flex flex-col text-center text-[16px] font-semibold">
-            {Pnl.toString().indexOf("-") === -1 ? (
-              <span className="px-2 py-4 text-[#3ecd21] text-center">
-                {Pnl}BNB
-              </span>
+            {Pnl !== 0 ? (
+              Pnl.toString().indexOf("-") === -1 ? (
+                <span className="px-2 py-4 text-[#3ecd21] text-center">
+                  {Pnl}BNB
+                </span>
+              ) : (
+                <span className="px-2 py-4 text-[#cd3521] text-center">
+                  {Pnl}BNB
+                </span>
+              )
             ) : (
-              <span className="px-2 py-4 text-[#cd3521] text-center">
-                {Pnl}BNB
+              <span className="px-2 py-4 text-[#848484] text-center">
+                {Pnl} BNB
               </span>
             )}
           </div>
