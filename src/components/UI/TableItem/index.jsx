@@ -49,10 +49,10 @@ const TableItem = ({ index, name, ticker, address, contractAdd, price }) => {
       <span className="px-2 w-[100px] text-[18px] font-normal">{name}</span>
       <span className="px-2 w-[100px] text-[18px] font-normal">${ticker}</span>
       <span className="px-2 w-[150px] text-[18px] font-normal">
-        {formatCommas(price * tsupply)}
+        {price ? formatCommas(price * tsupply) : "Loading"}
       </span>
       <span className="px-2 w-[120px] text-[18px] font-normal">
-        {twoDecimals(price)} USD
+        {price ? twoDecimals(price) + "USD" : "Loading"}
       </span>
       <span className="px-2 w-[150px] text-[18px] font-normal">
         {fiveDecimals(pool / tsupply)}%
