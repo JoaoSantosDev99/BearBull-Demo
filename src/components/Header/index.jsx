@@ -40,15 +40,20 @@ const Header = () => {
 
   return (
     <header className="w-full absolute top-0 flex justify-center">
-      <div className="flex max-w-screen-2xl px-3 py-4 w-full justify-between items-center">
+      <div className="flex max-w-screen-2xl px-2 py-4 w-full justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-[20px]">
           <h1>
-            <img
-              src={logo}
-              alt="log"
-              className=" h-[60px] w-[60px] lg:w-[90px] lg:h-[90px]"
-            />
+            <a
+              href="/"
+              rel="noreferrer"
+            >
+              <img
+                src={logo}
+                alt="log"
+                className=" h-[60px] w-[60px] lg:w-[90px] lg:h-[90px]"
+              />
+            </a>
           </h1>
           <span className="text-white font-bold text-[20px] lg:text-[32px] leading-[80%] ">
             BearBull
@@ -61,8 +66,7 @@ const Header = () => {
           {/* Price */}
           <div className="flex">
             <a
-              href="https://bearbull.finance/"
-              target="_blank"
+              href="/"
               rel="noreferrer"
             >
               <button className="h-[50px] mr-1 flex justify-center items-center text-white w-[70px] border-white border-[3px] font-semibold text-[20px]">
@@ -101,16 +105,28 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Hamburger */}
-        <button
-          onClick={() => setNav(true)}
-          className="lg:hidden mb-4"
-        >
-          <img
-            src={haburger}
-            alt=""
-          />
-        </button>
+        <div className="lg:hidden flex gap-2 items-center">
+          {/* Connect */}
+          <div className="border lg:hidden">
+            <button
+              onClick={connectWallet}
+              className="flex text-black justify-center items-center bg-white w-[120px] font-bold text-[15px] h-[40px]"
+            >
+              {isConnected ? addressShortener(address) : "Connect"}
+            </button>
+          </div>
+
+          {/* Hamburger */}
+          <button
+            onClick={() => setNav(true)}
+            className="lg:hidden mb-4"
+          >
+            <img
+              src={haburger}
+              alt=""
+            />
+          </button>
+        </div>
 
         {/* Mobile menu */}
         <div
@@ -132,11 +148,16 @@ const Header = () => {
               <div className="flex justify-between items-center w-full mb-5">
                 <div className="flex items-center gap-[10px]">
                   <h1>
-                    <img
-                      src={logo}
-                      alt="log"
-                      className="xl:h-[142px] h-[72px] w-[72px] xl:w-[142px]"
-                    />
+                    <a
+                      href="/"
+                      rel="noreferrer"
+                    >
+                      <img
+                        src={logo}
+                        alt="log"
+                        className="xl:h-[142px] h-[72px] w-[72px] xl:w-[142px]"
+                      />
+                    </a>
                   </h1>
                   <span className="text-white font-bold text-[20px] xl:text-[32px] leading-[80%] ">
                     BearBull
@@ -159,9 +180,10 @@ const Header = () => {
               >
                 {isConnected ? addressShortener(address) : "Connect Wallet"}
               </button>
+
+              {/* Home */}
               <a
-                href="https://bearbull.finance/"
-                target="_blank"
+                href="/"
                 rel="noreferrer"
               >
                 <button className="h-[50px] gap-4 mt-5 mr-1 flex justify-center items-center text-white px-3 border-white border-[3px] font-semibold text-[20px]">
@@ -175,7 +197,7 @@ const Header = () => {
               </a>
 
               <ul className="flex flex-col mt-7 font-bold text-xl gap-4 items-center">
-                <li>About</li>
+                <li className="border-b uppercase w-full text-center">About</li>
                 <a
                   href="https://bearbull-dex.gitbook.io/whitepaper"
                   target="_blank"
@@ -218,21 +240,41 @@ const Header = () => {
 
               {/* Social Media */}
               <div className="flex mt-10">
-                <img
-                  src={tg}
-                  alt=""
-                  className="w-[40px] h-[40px]"
-                />
-                <img
-                  src={tw}
-                  alt=""
-                  className="w-[42px] h-[42px]"
-                />
-                <img
-                  src={dk}
-                  alt=""
-                  className="w-[42px] h-[42px]"
-                />
+                <a
+                  href="https://t.me/bearbullchat"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    src={tg}
+                    alt=""
+                    className="w-[40px] h-[40px]"
+                  />
+                </a>
+
+                <a
+                  href="https://twitter.com/BearBullToken"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    src={tw}
+                    alt=""
+                    className="w-[42px] h-[42px]"
+                  />
+                </a>
+
+                <a
+                  href="https://linktr.ee/bearbulldex"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    src={dk}
+                    alt=""
+                    className="w-[42px] h-[42px]"
+                  />
+                </a>
               </div>
             </div>
           </div>

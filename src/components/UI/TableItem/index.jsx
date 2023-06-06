@@ -8,9 +8,9 @@ import ercAbi from "../../../contracts/erc-20.json";
 import { ethers } from "ethers";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/appContext";
-import { fiveDecimals } from "../../../utils";
+import { fiveDecimals, formatCommas, twoDecimals } from "../../../utils";
 
-const TableItem = ({ index, name, ticker, address, contractAdd }) => {
+const TableItem = ({ index, name, ticker, address, contractAdd, price }) => {
   const [inOrd, setInOrd] = useState(0);
   const [pool, setPool] = useState(0);
   const [tsupply, settsupply] = useState(0);
@@ -48,8 +48,12 @@ const TableItem = ({ index, name, ticker, address, contractAdd }) => {
     >
       <span className="px-2 w-[100px] text-[18px] font-normal">{name}</span>
       <span className="px-2 w-[100px] text-[18px] font-normal">${ticker}</span>
-      <span className="px-2 w-[150px] text-[18px] font-normal">__,___</span>
-      <span className="px-2 w-[120px] text-[18px] font-normal">__%</span>
+      <span className="px-2 w-[150px] text-[18px] font-normal">
+        {formatCommas(price * tsupply)}
+      </span>
+      <span className="px-2 w-[120px] text-[18px] font-normal">
+        {twoDecimals(price)} USD
+      </span>
       <span className="px-2 w-[150px] text-[18px] font-normal">
         {fiveDecimals(pool / tsupply)}%
       </span>

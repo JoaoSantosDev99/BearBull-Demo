@@ -18,21 +18,41 @@ const Hero = () => {
           </span>
           {/* <Timer /> */}
           <div className="flex">
-            <img
-              src={tg}
-              alt=""
-              className="w-[40px] h-[40px]"
-            />
-            <img
-              src={tw}
-              alt=""
-              className="w-[42px] h-[42px]"
-            />
-            <img
-              src={dk}
-              alt=""
-              className="w-[42px] h-[42px]"
-            />
+            <a
+              href="https://t.me/bearbullchat"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                src={tg}
+                alt=""
+                className="w-[40px] h-[40px]"
+              />
+            </a>
+
+            <a
+              href="https://twitter.com/BearBullToken"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                src={tw}
+                alt=""
+                className="w-[42px] h-[42px]"
+              />
+            </a>
+
+            <a
+              href="https://linktr.ee/bearbulldex"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                src={dk}
+                alt=""
+                className="w-[42px] h-[42px]"
+              />
+            </a>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import footerLogo from "../../assets/Logos/footerLogo.svg";
 import tg from "../../assets/icons/tg.svg";
 import tw from "../../assets/icons/twtt.svg";
 import dk from "../../assets/icons/dk.svg";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -29,21 +30,41 @@ const Footer = () => {
               </p>
             </div>
             <div className="flex">
-              <img
-                src={tg}
-                alt=""
-                className="w-[40px] h-[40px]"
-              />
-              <img
-                src={tw}
-                alt=""
-                className="w-[42px] h-[42px]"
-              />
-              <img
-                src={dk}
-                alt=""
-                className="w-[42px] h-[42px]"
-              />
+              <a
+                href="https://t.me/bearbullchat"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src={tg}
+                  alt=""
+                  className="w-[40px] h-[40px]"
+                />
+              </a>
+
+              <a
+                href="https://twitter.com/BearBullToken"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src={tw}
+                  alt=""
+                  className="w-[42px] h-[42px]"
+                />
+              </a>
+
+              <a
+                href="https://linktr.ee/bearbulldex"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src={dk}
+                  alt=""
+                  className="w-[42px] h-[42px]"
+                />
+              </a>
             </div>
           </div>
         </div>
@@ -56,12 +77,17 @@ const Footer = () => {
               Protocols
             </h3>
             <ul className="flex flex-col text-[#FFFFFF8F]">
-              <li className="text-[12px] md:text-[18px] font-normal">
-                Shorting Protocol
-              </li>
-              <li className="text-[12px] md:text-[18px] font-normal">
-                Lending Protocol
-              </li>
+              <Link to="short/0">
+                <li className="text-[12px] md:text-[18px] font-normal">
+                  Shorting Protocol
+                </li>
+              </Link>
+
+              <Link to="/lend/0">
+                <li className="text-[12px] md:text-[18px] font-normal">
+                  Lending Protocol
+                </li>
+              </Link>
             </ul>
           </div>
 
@@ -71,13 +97,27 @@ const Footer = () => {
               DEX
             </h3>
             <ul className="flex flex-col text-[#FFFFFF8F]">
-              <li className="text-[12px] md:text-[18px] font-normal">
-                BearBull Token
-              </li>
+              <a
+                href="https://pancakeswap.finance/swap?outputCurrency=0x4F0F2fA439C6454B4664f3C4432514Ec07c1bC28"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <li className="text-[12px] md:text-[18px] font-normal">
+                  BearBull Token
+                </li>
+              </a>
+
               <li className="text-[12px] md:text-[18px] font-normal">
                 Launch DEX
               </li>
-              <li className="text-[12px] md:text-[18px] font-normal">Earn</li>
+
+              <a
+                href="https://bearbullstaking.netlify.app/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <li className="text-[12px] md:text-[18px] font-normal">Earn</li>
+              </a>
             </ul>
           </div>
 
