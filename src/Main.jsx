@@ -7,23 +7,6 @@ import axios from "axios";
 import { useQuery } from "react-query";
 
 const Main = () => {
-  const fetchPrise = async () => {
-    const res = await axios.get(
-      "https://deep-index.moralis.io/api/v2/brc20/0x4F0F2fA439C6454B4664f3C4432514Ec07c1bC28/price?chain=bsc",
-      {
-        headers: {
-          "X-API-Key":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjE5OGJiOWUwLTUyNjItNGZkOS1iYTdjLWY5YmUzMWFjNzUzZSIsIm9yZ0lkIjoiMzE3MDMzIiwidXNlcklkIjoiMzI1OTQzIiwidHlwZUlkIjoiY2MyY2FlNmQtYzkyZi00NjY3LWE5NzktZDVkOTNjOGVkNTgyIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE2ODYwOTA0NjUsImV4cCI6NDg0MTg1MDQ2NX0.xUNQxlZPQ1XCQJLcmEl1gWZiYO64SNEsAXVm0251YSA",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return res.data;
-  };
-
-  const { data } = useQuery("price", fetchPrise);
-  console.log("data", JSON.stringify(data));
-
   return (
     <section className="w-full flex flex-col items-center justify-center">
       <Hero />
@@ -35,7 +18,7 @@ const Main = () => {
           <span className="px-2 w-[150px] text-[18px] font-bold">
             Market Cap
           </span>
-          <span className="px-2 w-[120px] text-[18px] font-bold">Price</span>
+          <span className="px-2 w-[120px] text-[18px] font-bold">24h</span>
           <span className="px-2 w-[150px] text-[18px] font-bold">
             Pool Supply
           </span>
@@ -55,7 +38,6 @@ const Main = () => {
               name={item.name}
               ticker={item.ticker}
               key={index}
-              price={data?.usdPrice}
             />
           ))}
         </div>
@@ -74,7 +56,7 @@ const Main = () => {
             <span className="px-2 py-2 border-b text-[16px] font-bold">
               Market cap
             </span>
-            <span className="px-2 py-2 text-[16px] font-bold">Price</span>
+            <span className="px-2 py-2 text-[16px] font-bold">24h</span>
           </div>
           <div className="flex w-full flex-col text-end ">
             <span className="px-2 py-2 border-b text-[16px] font-bold">

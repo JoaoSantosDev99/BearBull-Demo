@@ -7,7 +7,9 @@ import { ethers } from "ethers";
 import abi from "../../../contracts/contract.json";
 import ercAbi from "../../../contracts/erc-20.json";
 import { AppContext } from "../../../context/appContext";
-import { fiveDecimals } from "../../../utils";
+import { fiveDecimals, formatCommas, twoDecimals } from "../../../utils";
+import Tokens from "../../../constants/Tokens.json";
+import axios from "axios";
 
 const TableItemMob = ({ index, name, ticker, contractAdd, address }) => {
   const [showButtons, setShowButtons] = useState(false);
@@ -15,6 +17,8 @@ const TableItemMob = ({ index, name, ticker, contractAdd, address }) => {
   const [inOrd, setInOrd] = useState(0);
   const [pool, setPool] = useState(0);
   const [tsupply, settsupply] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [priceChange, setPriceChange] = useState(0);
 
   const { statProv } = useContext(AppContext);
 
@@ -34,6 +38,13 @@ const TableItemMob = ({ index, name, ticker, contractAdd, address }) => {
 
       const tsup = await readTokContract.totalSupply();
       settsupply(ethers.utils.formatUnits(tsup, 18));
+
+      const info = await axios.get(
+        `https://bearbullapi.onrender.com/token/${Tokens[index].address}`
+      );
+
+      setPrice(fiveDecimals(info.data.currentPrice));
+      setPriceChange(fiveDecimals(info.data.priceChange24));
     };
 
     fetchData();
@@ -56,8 +67,26 @@ const TableItemMob = ({ index, name, ticker, contractAdd, address }) => {
           </span>
         </div>
         <div className="flex w-full flex-col">
-          <span className="px-2 text-[16px] font-bold">__,___</span>
-          <span className="px-2 text-[16px] font-bold">+__%</span>
+          <span className="px-2 text-[16px] font-bold">
+            {price ? formatCommas(price * tsupply) : "Loading"}
+          </span>
+          <span className="px-2 text-[16px] font-bold">
+            {priceChange ? (
+              twoDecimals(priceChange * 100)
+                .toString()
+                .indexOf("-") === -1 ? (
+                <span className="text-[#36dd11]">
+                  {twoDecimals(priceChange * 100)}%
+                </span>
+              ) : (
+                <span className="text-[#dd1f11]">
+                  {twoDecimals(priceChange * 100)}%
+                </span>
+              )
+            ) : (
+              <span>Loading</span>
+            )}
+          </span>
         </div>
         <div className="flex w-full flex-col text-end">
           <span className="px-2 text-[16px] font-bold">

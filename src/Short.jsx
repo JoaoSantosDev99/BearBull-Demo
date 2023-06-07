@@ -56,13 +56,11 @@ const Short = () => {
     const inOrdFt = await readContract.tokensInShorts();
 
     // avoids breaking when no tokens are staked
-    if (!ethers.utils.formatUnits(inOrdFt, 0) === "0") {
-      const fworth = await readContract.getCollateral(
-        ethers.utils.formatUnits(inOrdFt, 0),
-        100
-      );
-      setstatOrdWorth(fiveDecimals(ethers.utils.formatUnits(fworth, 18)));
-    }
+    const fworth = await readContract.getCollateral(
+      ethers.utils.formatUnits(inOrdFt, 0),
+      100
+    );
+    setstatOrdWorth(fiveDecimals(ethers.utils.formatUnits(fworth, 18)));
 
     const poolFt = await readContract.totalLent();
     setstatTotalLent(ethers.utils.formatUnits(poolFt, 0));

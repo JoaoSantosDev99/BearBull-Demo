@@ -9,11 +9,15 @@ import { ethers } from "ethers";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/appContext";
 import { fiveDecimals, formatCommas, twoDecimals } from "../../../utils";
+import Tokens from "../../../constants/Tokens.json";
+import axios from "axios";
 
-const TableItem = ({ index, name, ticker, address, contractAdd, price }) => {
+const TableItem = ({ index, name, ticker, address, contractAdd }) => {
   const [inOrd, setInOrd] = useState(0);
   const [pool, setPool] = useState(0);
   const [tsupply, settsupply] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [priceChange, setPriceChange] = useState(0);
 
   const { statProv } = useContext(AppContext);
 
@@ -33,6 +37,13 @@ const TableItem = ({ index, name, ticker, address, contractAdd, price }) => {
 
       const tsup = await readTokContract.totalSupply();
       settsupply(ethers.utils.formatUnits(tsup, 18));
+
+      const info = await axios.get(
+        `https://bearbullapi.onrender.com/token/${Tokens[index].address}`
+      );
+
+      setPrice(fiveDecimals(info.data.currentPrice));
+      setPriceChange(fiveDecimals(info.data.priceChange24));
     };
 
     fetchData();
@@ -52,8 +63,23 @@ const TableItem = ({ index, name, ticker, address, contractAdd, price }) => {
         {price ? formatCommas(price * tsupply) : "Loading"}
       </span>
       <span className="px-2 w-[120px] text-[18px] font-normal">
-        {price ? twoDecimals(price) + "USD" : "Loading"}
+        {priceChange ? (
+          twoDecimals(priceChange * 100)
+            .toString()
+            .indexOf("-") === -1 ? (
+            <span className="text-[#36dd11]">
+              {twoDecimals(priceChange * 100)}%
+            </span>
+          ) : (
+            <span className="text-[#dd1f11]">
+              {twoDecimals(priceChange * 100)}%
+            </span>
+          )
+        ) : (
+          <span>Loading</span>
+        )}
       </span>
+
       <span className="px-2 w-[150px] text-[18px] font-normal">
         {fiveDecimals(pool / tsupply)}%
       </span>
