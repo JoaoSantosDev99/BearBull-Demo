@@ -183,9 +183,9 @@ const Short = () => {
   };
 
   return (
-    <section className="w-full flex justify-center">
+    <section className="bg-center bg-cover bg-no-repeat bg-[url('./assets/short.jpg')] w-full flex justify-center">
       <div className="text-white max-w-screen-2xl flex flex-col w-full justify-center items-center">
-        <div className="bg-center bg-cover bg-no-repeat bg-[url('./assets/short.jpg')] flex flex-col items-center w-full">
+        <div className="flex flex-col items-center w-full">
           <h2 className="mt-96 leading-[52px] md:leading-normal mb-10 md:mb-10 text-[50px] md:text-[70px] w-[370px] sm:w-[570px] md:w-[90%] text-start font-bold">
             <span className="text-[#D34253]">
               Short:
