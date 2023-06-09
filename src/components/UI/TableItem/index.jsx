@@ -53,8 +53,8 @@ const TableItem = ({ index, name, ticker, address, contractAdd }) => {
     <div
       className={
         index % 2 === 0
-          ? "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] hidden lg:flex items-center text-white justify-center py-3 mb-20 max-w-screen-xl px-2"
-          : "hidden lg:flex items-center text-white justify-center py-3 mb-20 max-w-screen-xl px-2"
+          ? "bg-gradient-to-r from-[#191919] via-[#181818] to-[#000] hidden lg:flex items-center text-white justify-center py-3 max-w-screen-xl px-2"
+          : "hidden lg:flex items-center text-white justify-center py-3 max-w-screen-xl px-2"
       }
     >
       <span className="px-2 w-[100px] text-[18px] font-normal">{name}</span>

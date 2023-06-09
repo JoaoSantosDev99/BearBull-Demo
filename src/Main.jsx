@@ -3,8 +3,6 @@ import TableItemMob from "./components/UI/TableItemMob";
 import PreFooter from "./components/PreFooter";
 import Hero from "./Hero";
 import TokenList from "./constants/Tokens.json";
-import axios from "axios";
-import { useQuery } from "react-query";
 
 const Main = () => {
   return (
@@ -29,7 +27,7 @@ const Main = () => {
         </div>
 
         {/* Table Iteam */}
-        <div className="hidden lg:flex">
+        <div className="hidden lg:flex flex-col">
           {TokenList.map((item, index) => (
             <TableItem
               index={index}
@@ -67,7 +65,7 @@ const Main = () => {
         </div>
 
         {/* Mobile Item */}
-        <div className="lg:hidden px-[4px] flex text-white justify-center mb-20 max-w-xl w-full">
+        <div className="lg:hidden px-[4px] flex flex-col text-white justify-center mb-20 max-w-xl w-full">
           {TokenList.map((item, index) => (
             <TableItemMob
               index={index}
